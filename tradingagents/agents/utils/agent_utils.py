@@ -62,7 +62,7 @@ def get_language_instruction() -> str:
     lang = get_config().get("output_language", "English")
     if lang.strip().lower() == "english":
         return ""
-    return f" Write your entire response in {lang}."
+    return f" 请将完整回答使用{lang}书写（write your entire response in {lang}）。"
 
 
 def _clean_identity_value(value: Any) -> str | None:
@@ -134,37 +134,36 @@ def build_instrument_context(
     is_crypto = asset_type == "crypto"
     instrument_label = "asset" if is_crypto else "instrument"
     context = (
-        f"The {instrument_label} to analyze is `{ticker}`. "
-        "Use this exact ticker in every tool call, report, and recommendation, "
-        "preserving any exchange suffix (e.g. `.TO`, `.L`, `.HK`, `.T`, `-USD`)."
+        f"要分析的{instrument_label}是 `{ticker}`。"
+        "在每次工具调用、报告和建议中都必须使用这个完整代码，"
+        "保留交易所后缀（exchange suffix；例如 `.TO`、`.L`、`.HK`、`.T`、`-USD`）。"
     )
 
     details = []
     if identity:
         name = identity.get("company_name") or identity.get("name")
         if name:
-            details.append(f"{'Name' if is_crypto else 'Company'}: {name}")
+            legacy_label = "Name" if is_crypto else "Company"
+            details.append(f"{'资产名称' if is_crypto else '公司名称'}（{legacy_label}: {name}）：{name}")
         sector, industry = identity.get("sector"), identity.get("industry")
         if sector and industry:
-            details.append(f"Business classification: {sector} / {industry}")
+            details.append(f"业务分类：{sector} / {industry}")
         elif sector:
-            details.append(f"Sector: {sector}")
+            details.append(f"行业板块：{sector}")
         elif industry:
-            details.append(f"Industry: {industry}")
+            details.append(f"细分行业：{industry}")
         if identity.get("exchange"):
-            details.append(f"Exchange: {identity['exchange']}")
+            details.append(f"交易所（Exchange: {identity['exchange']}）：{identity['exchange']}")
 
     if details:
         context += (
             f" Resolved identity: {'; '.join(details)}. "
-            "Do not substitute a different company or ticker unless a tool "
-            "result explicitly disproves this resolved identity."
+            "除非工具结果明确推翻该身份，否则不要替换成其他公司或代码（Do not substitute a different company or ticker）。"
         )
 
     if is_crypto:
         context += (
-            " Treat it as a crypto asset rather than a company, and do not "
-            "assume company fundamentals are available."
+            "请将其视为加密资产（crypto asset rather than a company）而非公司，不要假设一定存在公司基本面数据。"
         )
     return context
 
@@ -205,13 +204,10 @@ def create_msg_delete():
         trade_date = state.get("trade_date", "the requested date")
         placeholder = HumanMessage(
             content=(
-                f"Proceed with your assigned analysis for this workflow. "
-                f"{instrument_context} The analysis date is {trade_date}."
+                f"请继续执行你在本工作流中的分析任务。"
+                f"{instrument_context} 分析日期为 {trade_date}。"
             )
         )
         return {"messages": removal_operations + [placeholder]}
 
     return delete_messages
-
-
-

@@ -84,13 +84,13 @@ def create_sentiment_analyst(llm):
             [
                 (
                     "system",
-                    "You are a helpful AI assistant, collaborating with other assistants."
-                    " If you or any other assistant has the FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** or deliverable,"
-                    " prefix your response with FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** so the team knows to stop."
+                    "你是一名与其他助理协作的 AI 助手。"
+                    "如果你或其他助理已经给出 FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** 或最终交付物，"
+                    "请在回答前加上 FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL**，以便团队停止后续分析。"
                     # No tool-calling here: the data is pre-fetched into the
                     # prompt, so tool-range wording would only invite a
                     # hallucinated tool call (#1130).
-                    " Today's date is {current_date}; treat it as 'now' for all analysis. {instrument_context}"
+                    "今天的日期是 {current_date}，所有分析都必须以它作为当前日期。{instrument_context}"
                     " " + NO_EXTERNAL_TOOLS +
                     "\n{system_message}",
                 ),
@@ -133,57 +133,57 @@ def _build_system_message(
     reddit_block: str,
 ) -> str:
     """Assemble the sentiment-analyst system message with structured data blocks."""
-    return f"""You are a financial market sentiment analyst. Your task is to produce a comprehensive sentiment report for {ticker} covering the period from {start_date} to {end_date}, drawing on three complementary data sources that have already been collected for you.
+    return f"""你是一名金融市场情绪分析师。你的任务是基于已经为你收集的三类互补数据，为 {ticker} 撰写覆盖 {start_date} 至 {end_date} 的综合情绪报告。
 
-## Data sources (pre-fetched, in this prompt)
+## 数据来源（已预先获取并放入本 Prompt）
 
-### News headlines — Yahoo Finance, past 7 days
-Institutional framing. Fact-driven, slower-moving signal.
+### 新闻标题 —— Yahoo Finance，过去 7 天
+机构视角，强调事实，是变化较慢的信号。
 
 <start_of_news>
 {news_block}
 <end_of_news>
 
-### StockTwits messages — retail-trader social platform indexed by cashtag
-Fast-moving signal. Each message carries a user-labeled sentiment tag (Bullish / Bearish / no-label) plus the message body.
+### StockTwits 消息 —— 以 cashtag 索引的散户交易平台
+变化快速的信号。每条消息包含用户标注的情绪标签（Bullish / Bearish / no-label）和正文。
 
 <start_of_stocktwits>
 {stocktwits_block}
 <end_of_stocktwits>
 
-### Reddit posts — r/wallstreetbets, r/stocks, r/investing (past 7 days)
-Community discussion. Engagement signal via upvote score and comment count. Subreddit character matters (r/wallstreetbets is often contrarian/exuberant; r/stocks more measured; r/investing longer-term).
+### Reddit 帖子 —— r/wallstreetbets、r/stocks、r/investing（过去 7 天）
+社区讨论。通过赞数和评论数衡量参与度。要考虑不同子版块的特点（r/wallstreetbets 往往更反向或兴奋，r/stocks 更审慎，r/investing 更偏长期）。
 
 <start_of_reddit>
 {reddit_block}
 <end_of_reddit>
 
-## How to analyze this data (best practices)
+## 数据分析方法（最佳实践）
 
-1. **Read the StockTwits Bullish/Bearish ratio as a leading retail-sentiment signal.** A 70/30 bullish/bearish split is moderately bullish; ≥90/10 may indicate over-extension and contrarian risk; 50/50 is uncertainty. Sample size matters — base rates on the actual message count, not percentages alone.
+1. **将 StockTwits 的 Bullish/Bearish 比例作为领先的散户情绪信号。** 70/30 表示中度看多；≥90/10 可能表示过度拥挤和反向风险；50/50 表示不确定。样本量很重要，必须依据实际消息数量，不能只看百分比。
 
-2. **Look for cross-source divergences.** If news framing is bearish but StockTwits is overwhelmingly bullish, that mismatch is itself a signal — it can mean retail is leaning into a thesis the news flow hasn't caught up to (or vice versa, that retail is chasing while institutions are cautious).
+2. **寻找不同来源之间的背离。** 如果新闻偏空而 StockTwits 极度看多，这种不一致本身就是信号：可能代表散户正在押注新闻尚未反映的论点，也可能代表散户追涨而机构保持谨慎。
 
-3. **Weight Reddit posts by engagement.** A 400-upvote / 200-comment thread reflects community attention; a 3-upvote post is noise. Read the body excerpts for context — the title alone often misleads.
+3. **按参与度为 Reddit 帖子加权。** 一个获得 400 个赞、200 条评论的帖子代表社区关注；只有 3 个赞的帖子可能只是噪声。要阅读正文摘录，不能只看标题。
 
-4. **Distinguish opinion from event.** A news headline ("Nvidia announces $500M Corning deal") is an event; a StockTwits post ("buying NVDA, this is going to moon") is opinion. Both are inputs but should be weighted differently in your conclusions.
+4. **区分观点和事件。** 新闻标题（例如“Nvidia announces $500M Corning deal”）是事件；StockTwits 帖子（例如“buying NVDA, this is going to moon”）是观点。两者都可以作为输入，但在结论中的权重应不同。
 
-5. **Identify recurring narrative themes.** What topic keeps coming up across sources? That's the dominant narrative driving current sentiment.
+5. **识别反复出现的叙事主题。** 哪些话题在多个来源中持续出现？它们通常是驱动当前情绪的主导叙事。
 
-6. **Be honest about data limits.** If StockTwits returned only a handful of messages, or one or more sources returned an "<unavailable>" placeholder, the sentiment read is less robust — flag this explicitly in the `confidence` field and the narrative. If the sources are silent on a given subreddit, say so.
+6. **诚实说明数据限制。** 如果 StockTwits 只返回少量消息，或某个来源返回了“<unavailable>”占位符，情绪判断就不够稳健，必须在 `confidence` 字段和叙述中明确指出。如果某个子版块没有数据，也要说明。
 
-7. **Identify catalysts and risks** that emerge across sources — news of upcoming earnings, product launches, competitive threats, macro headlines, etc.
+7. **识别多个来源共同揭示的催化剂和风险**，例如即将发布的财报、产品发布、竞争威胁和宏观新闻。
 
-8. **Past sentiment is not predictive.** Frame your conclusions as signal for the trader to weigh alongside fundamentals and technicals, not as a price call.
+8. **过去的情绪不具有确定的预测能力。** 请把结论表述为供交易员结合基本面和技术面权衡的信号，不要把它写成确定的价格预测。
 
-## Output fields
+## 输出字段
 
 Fill the following fields:
 
-- **overall_band**: Exactly one of Bullish / Mildly Bullish / Neutral / Mixed / Mildly Bearish / Bearish. Use Mixed when sources point in clearly different directions; Neutral only when all sources are genuinely silent.
-- **overall_score**: A number from 0 (maximally bearish) to 10 (maximally bullish); 5 is neutral. Keep it consistent with overall_band.
-- **confidence**: low / medium / high, based on data quality and sample size.
-- **narrative**: Full source-by-source breakdown, divergences, dominant narrative themes, catalysts and risks, and a markdown summary table of key sentiment signals (direction, source, supporting evidence).
+ - **overall_band**：只能填写 Bullish / Mildly Bullish / Neutral / Mixed / Mildly Bearish / Bearish 之一。当来源方向明显不一致时使用 Mixed；只有所有来源确实沉默时才使用 Neutral。
+ - **overall_score**：0（极度看空）到 10（极度看多）的数字，5 表示中性，并与 overall_band 保持一致。
+ - **confidence**：根据数据质量和样本量填写 low / medium / high。
+ - **narrative**：完整覆盖逐来源分析、背离、主导叙事、催化剂和风险，并附一张 Markdown 表格总结关键情绪信号（方向、来源、支持证据）。
 
 {get_language_instruction()}"""
 

@@ -9,8 +9,11 @@ def get_stock(
     end_date: str
 ) -> str:
     """
-    Returns raw daily OHLCV values, adjusted close values, and historical split/dividend events
-    filtered to the specified date range.
+    Returns raw daily OHLCV values filtered to the specified date range.
+
+    ``TIME_SERIES_DAILY_ADJUSTED`` is a premium Alpha Vantage endpoint. Use
+    the free ``TIME_SERIES_DAILY`` endpoint here so an ordinary API key can
+    serve as a practical fallback when Yahoo Finance throttles requests.
 
     Args:
         symbol: The name of the equity. For example: symbol=IBM
@@ -18,7 +21,7 @@ def get_stock(
         end_date: End date in yyyy-mm-dd format
 
     Returns:
-        CSV string containing the daily adjusted time series data filtered to the date range.
+        CSV string containing the daily time series data filtered to the date range.
     """
     # Parse dates to determine the range
     start_dt = datetime.strptime(start_date, "%Y-%m-%d")
@@ -35,6 +38,6 @@ def get_stock(
         "datatype": "csv",
     }
 
-    response = _make_api_request("TIME_SERIES_DAILY_ADJUSTED", params)
+    response = _make_api_request("TIME_SERIES_DAILY", params)
 
     return _filter_csv_by_date_range(response, start_date, end_date)

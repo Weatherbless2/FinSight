@@ -24,26 +24,24 @@ def create_bear_researcher(llm):
             else "Asset fundamentals report (may be unavailable for crypto)"
         )
 
-        prompt = f"""You are a Bear Analyst making the case against investing in the {target_label}. Your goal is to present a well-reasoned argument emphasizing risks, challenges, and negative indicators. Leverage the provided research and data to highlight potential downsides and counter bullish arguments effectively.
+        prompt = f"""你是一名看空研究员，负责论证不应投资 {target_label}。请围绕风险、挑战和负面指标提出严谨论点，利用已有研究和数据揭示潜在下行空间，并有效反驳看多观点。
 
-Key points to focus on:
+重点关注：
+- 风险与挑战：市场饱和、财务不稳定或宏观经济威胁等可能拖累表现的因素。
+- 竞争弱点：市场地位较弱、创新能力下降或竞争对手威胁。
+- 负面指标：财务数据、市场趋势或近期不利新闻。
+- 回应看多观点：用具体数据和严谨推理揭示看多论点的弱点或过度乐观假设。
+- 互动辩论：直接回应看多研究员的观点，不要只是罗列事实。
 
-- Risks and Challenges: Highlight factors like market saturation, financial instability, or macroeconomic threats that could hinder the stock's performance.
-- Competitive Weaknesses: Emphasize vulnerabilities such as weaker market positioning, declining innovation, or threats from competitors.
-- Negative Indicators: Use evidence from financial data, market trends, or recent adverse news to support your position.
-- Bull Counterpoints: Critically analyze the bull argument with specific data and sound reasoning, exposing weaknesses or over-optimistic assumptions.
-- Engagement: Present your argument in a conversational style, directly engaging with the bull analyst's points and debating effectively rather than simply listing facts.
-
-Resources available:
-
+可用资源：
 {instrument_context}
-Market research report: {market_research_report}
-Social media sentiment report: {sentiment_report}
-Latest world affairs news: {news_report}
-{fundamentals_label}: {fundamentals_report}
-Conversation history of the debate: {history}
-Last bull argument: {current_response}
-Use this information to deliver a compelling bear argument, refute the bull's claims, and engage in a dynamic debate that demonstrates the risks and weaknesses of investing in the {target_label}.
+市场研究报告：{market_research_report}
+社交媒体情绪报告：{sentiment_report}
+最新全球新闻报告：{news_report}
+{fundamentals_label}：{fundamentals_report}
+辩论历史：{history}
+看多研究员上一轮论点：{current_response}
+请利用以上信息提出有说服力的看空论点，反驳看多观点，并进行动态辩论，展示投资 {target_label} 的风险和弱点。
 """ + get_language_instruction()
 
         response = llm.invoke(prompt)

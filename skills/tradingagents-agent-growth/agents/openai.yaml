@@ -1,0 +1,7 @@
+interface:
+  display_name: "TradingAgents 成长路线"
+  short_description: "面试驱动的 TradingAgents 工程化学习路线"
+  default_prompt: "使用 $tradingagents-agent-growth 检查 TradingAgents 当前阶段，并实现下一张已核验的工单。"
+
+policy:
+  allow_implicit_invocation: true

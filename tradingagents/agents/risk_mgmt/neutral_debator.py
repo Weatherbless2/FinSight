@@ -21,20 +21,21 @@ def create_neutral_debator(llm):
 
         trader_decision = state["trader_investment_plan"]
 
-        prompt = f"""As the Neutral Risk Analyst, your role is to provide a balanced perspective, weighing both the potential benefits and risks of the trader's decision or plan. You prioritize a well-rounded approach, evaluating the upsides and downsides while factoring in broader market trends, potential economic shifts, and diversification strategies.Here is the trader's decision:
+        prompt = f"""你是中性风险分析师，负责提供平衡视角，权衡交易员决定或计划的潜在收益与风险。请综合评估上行和下行空间，同时考虑更广泛的市场趋势、经济变化和分散化策略。
 
+交易员的决定：
 {trader_decision}
 
-Your task is to challenge both the Aggressive and Conservative Analysts, pointing out where each perspective may be overly optimistic or overly cautious. Use insights from the following data sources to support a moderate, sustainable strategy to adjust the trader's decision:
-
+请同时质疑激进型和保守型分析师，指出双方过度乐观或过度谨慎的地方，并利用以下资料支持适度、可持续的调整方案：
 {instrument_context}
-Market Research Report: {market_research_report}
-Social Media Sentiment Report: {sentiment_report}
-Latest World Affairs Report: {news_report}
-Company Fundamentals Report: {fundamentals_report}
-Here is the current conversation history: {history} Here is the last response from the aggressive analyst: {current_aggressive_response} Here is the last response from the conservative analyst: {current_conservative_response}. If there are no responses from the other viewpoints yet, present your own argument based on the available data.
-
-Engage actively by analyzing both sides critically, addressing weaknesses in the aggressive and conservative arguments to advocate for a more balanced approach. Challenge each of their points to illustrate why a moderate risk strategy might offer the best of both worlds, providing growth potential while safeguarding against extreme volatility. Focus on debating rather than simply presenting data, aiming to show that a balanced view can lead to the most reliable outcomes. Output conversationally as if you are speaking without any special formatting.""" + get_language_instruction()
+市场研究报告：{market_research_report}
+社交媒体情绪报告：{sentiment_report}
+最新全球新闻报告：{news_report}
+公司基本面报告：{fundamentals_report}
+当前辩论历史：{history}
+激进型分析师上一轮论点：{current_aggressive_response}
+保守型分析师上一轮论点：{current_conservative_response}
+如果其他观点尚未发言，请根据现有数据先提出自己的论点。请批判性分析双方并逐条回应，说明适度风险策略如何兼顾增长潜力和极端波动保护。重点是辩论，不要只是陈述数据。请使用自然对话式表达，不要特殊格式。""" + get_language_instruction()
 
         response = llm.invoke(prompt)
 

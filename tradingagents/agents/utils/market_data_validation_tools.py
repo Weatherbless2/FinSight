@@ -2,6 +2,10 @@ from typing import Annotated
 
 from langchain_core.tools import tool
 
+from tradingagents.agents.utils.tool_validation import (
+    VerifiedSnapshotInput,
+    validate_tool_input,
+)
 from tradingagents.dataflows.market_data_validator import build_verified_market_snapshot
 
 
@@ -20,4 +24,12 @@ def get_verified_market_snapshot(
     price levels, Bollinger bands, RSI, MACD, moving averages, support /
     resistance, or historical comparisons, and treat it as the source of truth.
     """
-    return build_verified_market_snapshot(symbol, curr_date, look_back_days)
+    payload = validate_tool_input(
+        VerifiedSnapshotInput,
+        symbol=symbol,
+        curr_date=curr_date,
+        look_back_days=look_back_days,
+    )
+    return build_verified_market_snapshot(
+        payload.symbol, payload.curr_date, payload.look_back_days
+    )

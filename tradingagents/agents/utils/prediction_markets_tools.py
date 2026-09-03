@@ -2,6 +2,10 @@ from typing import Annotated
 
 from langchain_core.tools import tool
 
+from tradingagents.agents.utils.tool_validation import (
+    PredictionMarketsInput,
+    validate_tool_input,
+)
 from tradingagents.dataflows.interface import route_to_vendor
 
 
@@ -28,4 +32,9 @@ def get_prediction_markets(
     Returns:
         str: A formatted markdown report of matching prediction markets
     """
-    return route_to_vendor("get_prediction_markets", topic, limit)
+    payload = validate_tool_input(
+        PredictionMarketsInput,
+        topic=topic,
+        limit=limit,
+    )
+    return route_to_vendor("get_prediction_markets", payload.topic, payload.limit)

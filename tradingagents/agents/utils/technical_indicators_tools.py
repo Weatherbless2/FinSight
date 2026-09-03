@@ -2,6 +2,7 @@ from typing import Annotated
 
 from langchain_core.tools import tool
 
+from tradingagents.agents.utils.tool_validation import IndicatorInput, validate_tool_input
 from tradingagents.dataflows.interface import route_to_vendor
 
 
@@ -23,13 +24,28 @@ def get_indicators(
     Returns:
         str: A formatted dataframe containing the technical indicators for the specified ticker symbol and indicator.
     """
+    payload = validate_tool_input(
+        IndicatorInput,
+        symbol=symbol,
+        indicator=indicator,
+        curr_date=curr_date,
+        look_back_days=look_back_days,
+    )
     # LLMs sometimes pass multiple indicators as a comma-separated string;
-    # split and process each individually.
-    indicators = [i.strip().lower() for i in indicator.split(",") if i.strip()]
+    # validation normalizes and checks every name before any vendor call.
+    indicators = payload.indicator.split(",")
     results = []
     for ind in indicators:
         try:
-            results.append(route_to_vendor("get_indicators", symbol, ind, curr_date, look_back_days))
+            results.append(
+                route_to_vendor(
+                    "get_indicators",
+                    payload.symbol,
+                    ind,
+                    payload.curr_date,
+                    payload.look_back_days,
+                )
+            )
         except ValueError as e:
             results.append(str(e))
     return "\n\n".join(results)

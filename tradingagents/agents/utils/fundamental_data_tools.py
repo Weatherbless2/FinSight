@@ -2,6 +2,11 @@ from typing import Annotated
 
 from langchain_core.tools import tool
 
+from tradingagents.agents.utils.tool_validation import (
+    FundamentalInput,
+    FundamentalStatementInput,
+    validate_tool_input,
+)
 from tradingagents.dataflows.interface import route_to_vendor
 
 
@@ -19,14 +24,19 @@ def get_fundamentals(
     Returns:
         str: A formatted report containing comprehensive fundamental data
     """
-    return route_to_vendor("get_fundamentals", ticker, curr_date)
+    payload = validate_tool_input(
+        FundamentalInput,
+        ticker=ticker,
+        curr_date=curr_date,
+    )
+    return route_to_vendor("get_fundamentals", payload.ticker, payload.curr_date)
 
 
 @tool
 def get_balance_sheet(
     ticker: Annotated[str, "ticker symbol"],
     freq: Annotated[str, "reporting frequency: annual/quarterly"] = "quarterly",
-    curr_date: Annotated[str, "current date you are trading at, yyyy-mm-dd"] = None,
+    curr_date: Annotated[str | None, "current date you are trading at, yyyy-mm-dd"] = None,
 ) -> str:
     """
     Retrieve balance sheet data for a given ticker symbol.
@@ -38,14 +48,22 @@ def get_balance_sheet(
     Returns:
         str: A formatted report containing balance sheet data
     """
-    return route_to_vendor("get_balance_sheet", ticker, freq, curr_date)
+    payload = validate_tool_input(
+        FundamentalStatementInput,
+        ticker=ticker,
+        freq=freq,
+        curr_date=curr_date,
+    )
+    return route_to_vendor(
+        "get_balance_sheet", payload.ticker, payload.freq, payload.curr_date
+    )
 
 
 @tool
 def get_cashflow(
     ticker: Annotated[str, "ticker symbol"],
     freq: Annotated[str, "reporting frequency: annual/quarterly"] = "quarterly",
-    curr_date: Annotated[str, "current date you are trading at, yyyy-mm-dd"] = None,
+    curr_date: Annotated[str | None, "current date you are trading at, yyyy-mm-dd"] = None,
 ) -> str:
     """
     Retrieve cash flow statement data for a given ticker symbol.
@@ -57,14 +75,20 @@ def get_cashflow(
     Returns:
         str: A formatted report containing cash flow statement data
     """
-    return route_to_vendor("get_cashflow", ticker, freq, curr_date)
+    payload = validate_tool_input(
+        FundamentalStatementInput,
+        ticker=ticker,
+        freq=freq,
+        curr_date=curr_date,
+    )
+    return route_to_vendor("get_cashflow", payload.ticker, payload.freq, payload.curr_date)
 
 
 @tool
 def get_income_statement(
     ticker: Annotated[str, "ticker symbol"],
     freq: Annotated[str, "reporting frequency: annual/quarterly"] = "quarterly",
-    curr_date: Annotated[str, "current date you are trading at, yyyy-mm-dd"] = None,
+    curr_date: Annotated[str | None, "current date you are trading at, yyyy-mm-dd"] = None,
 ) -> str:
     """
     Retrieve income statement data for a given ticker symbol.
@@ -76,4 +100,12 @@ def get_income_statement(
     Returns:
         str: A formatted report containing income statement data
     """
-    return route_to_vendor("get_income_statement", ticker, freq, curr_date)
+    payload = validate_tool_input(
+        FundamentalStatementInput,
+        ticker=ticker,
+        freq=freq,
+        curr_date=curr_date,
+    )
+    return route_to_vendor(
+        "get_income_statement", payload.ticker, payload.freq, payload.curr_date
+    )

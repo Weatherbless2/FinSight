@@ -40,29 +40,29 @@ def create_portfolio_manager(llm):
             else ""
         )
 
-        prompt = f"""As the Portfolio Manager, synthesize the risk analysts' debate and deliver the final trading decision.
+        prompt = f"""你是组合经理。请综合风险分析师的辩论，给出最终交易决策。
 
 {instrument_context}
 
 ---
 
-**Rating Scale** (use exactly one):
-- **Buy**: Strong conviction to enter or add to position
-- **Overweight**: Favorable outlook, gradually increase exposure
-- **Hold**: Maintain current position, no action needed
-- **Underweight**: Reduce exposure, take partial profits
-- **Sell**: Exit position or avoid entry
+**评级标准**（必须且只能选择一个）：
+- **Buy**：强烈认可，建立或增加仓位
+- **Overweight**：前景有利，逐步增加敞口
+- **Hold**：维持当前仓位，不采取行动
+- **Underweight**：减少敞口，分批止盈
+- **Sell**：退出仓位或避免入场
 
-**Context:**
-- Research Manager's investment plan: **{research_plan}**
-- Trader's transaction proposal: **{trader_plan}**
+**上下文：**
+- 研究经理的投资计划：**{research_plan}**
+- 交易员的交易提案：**{trader_plan}**
 {lessons_line}
-**Risk Analysts Debate History:**
+**风险分析师辩论历史：**
 {history}
 
 ---
 
-Be decisive and ground every conclusion in specific evidence from the analysts.
+请明确决策，并让每个结论都建立在分析师提供的具体证据上。
 
 {NO_EXTERNAL_TOOLS}{get_language_instruction()}"""
 

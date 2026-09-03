@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+from io import StringIO
 from typing import Annotated
 
 import pandas as pd
@@ -145,6 +146,43 @@ def _needs_same_day_refresh(data_file, curr_date_dt, today_date) -> bool:
     return time.time() - os.path.getmtime(data_file) > OHLCV_CACHE_TTL_SECONDS
 
 
+def _load_alpha_vantage_ohlcv(symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
+    """Fetch free Alpha Vantage daily bars in the internal OHLCV shape.
+
+    This path is used when Alpha Vantage is preferred or Yahoo Finance has
+    explicitly returned HTTP 429. Keeping the conversion here lets the
+    technical-indicator and verified-snapshot paths reuse the same cached data
+    without making one Alpha Vantage technical-indicator request per indicator.
+    """
+    from .alpha_vantage_stock import get_stock
+
+    csv_data = get_stock(symbol, start_date, end_date)
+    data = pd.read_csv(StringIO(csv_data))
+    data = data.rename(
+        columns={
+            "timestamp": "Date",
+            "open": "Open",
+            "high": "High",
+            "low": "Low",
+            "close": "Close",
+            "volume": "Volume",
+        }
+    )
+    required = {"Date", "Open", "High", "Low", "Close", "Volume"}
+    if data.empty or not required.issubset(data.columns):
+        raise NoMarketDataError(
+            symbol, symbol, "Alpha Vantage returned no usable daily OHLCV rows"
+        )
+    return data
+
+
+def _load_tencent_hk_ohlcv(symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
+    """Fetch Tencent Finance daily bars in the internal OHLCV shape."""
+    from .tencent_finance import get_hk_stock_dataframe
+
+    return get_hk_stock_dataframe(symbol, start_date, end_date)
+
+
 def load_ohlcv(symbol: str, curr_date: str) -> pd.DataFrame:
     """Fetch OHLCV data with caching, filtered to prevent look-ahead bias.
 
@@ -171,16 +209,26 @@ def load_ohlcv(symbol: str, curr_date: str) -> pd.DataFrame:
     end_str = (today_date + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
 
     os.makedirs(config["data_cache_dir"], exist_ok=True)
-    data_file = os.path.join(
+    yahoo_data_file = os.path.join(
         config["data_cache_dir"],
         f"{safe_symbol}-YFin-data-{start_str}-{end_str}.csv",
+    )
+    alpha_vantage_data_file = os.path.join(
+        config["data_cache_dir"],
+        f"{safe_symbol}-AlphaVantage-data-{start_str}-{end_str}.csv",
+    )
+    tencent_data_file = os.path.join(
+        config["data_cache_dir"],
+        f"{safe_symbol}-Tencent-data-{start_str}-{end_str}.csv",
     )
 
     # A cached file may be empty if a prior fetch failed (unknown symbol,
     # transient rate limit). Treat an empty/columnless cache as a miss and
     # re-fetch rather than serving the poisoned file forever.
     data = None
-    if os.path.exists(data_file):
+    for data_file in (yahoo_data_file, alpha_vantage_data_file, tencent_data_file):
+        if not os.path.exists(data_file):
+            continue
         cached = pd.read_csv(data_file, on_bad_lines="skip", encoding="utf-8")
         # Serve the cache only when it is usable and not a stale snapshot of the
         # day being requested (#1150); otherwise fall through and refetch.
@@ -190,23 +238,72 @@ def load_ohlcv(symbol: str, curr_date: str) -> pd.DataFrame:
             and not _needs_same_day_refresh(data_file, curr_date_dt, today_date)
         ):
             data = cached
+            break
 
     if data is None:
-        downloaded = yf_retry(lambda: yf.download(
-            canonical,
-            start=start_str,
-            end=end_str,
-            multi_level_index=False,
-            progress=False,
-            auto_adjust=True,
-        ))
-        downloaded = _ensure_date_column(downloaded.reset_index())
+        downloaded = None
+        cache_file = None
+        configured_vendors = [
+            vendor.strip()
+            for vendor in config.get("data_vendors", {}).get("core_stock_apis", "yfinance").split(",")
+        ]
+        for vendor in configured_vendors:
+            try:
+                if vendor == "alpha_vantage":
+                    downloaded = _load_alpha_vantage_ohlcv(canonical, start_str, end_str)
+                    cache_file = alpha_vantage_data_file
+                elif vendor == "tencent":
+                    downloaded = _load_tencent_hk_ohlcv(canonical, start_str, end_str)
+                    cache_file = tencent_data_file
+                else:
+                    continue
+            except NoMarketDataError:
+                # A vendor may not cover this market (Tencent is intentionally
+                # limited to .HK symbols); continue through the configured chain.
+                continue
+            except Exception as exc:
+                logger.warning("%s failed for %s: %s", vendor, canonical, exc)
+                continue
+            else:
+                break
+
+        if downloaded is None:
+            try:
+                downloaded = yf_retry(lambda: yf.download(
+                    canonical,
+                    start=start_str,
+                    end=end_str,
+                    multi_level_index=False,
+                    progress=False,
+                    auto_adjust=True,
+                ))
+                downloaded = _ensure_date_column(downloaded.reset_index())
+                cache_file = yahoo_data_file
+            except YFRateLimitError:
+                logger.warning(
+                    "Yahoo Finance rate-limited %s; using Alpha Vantage daily data for the local cache.",
+                    canonical,
+                )
+                for vendor in configured_vendors:
+                    if vendor == "alpha_vantage":
+                        downloaded = _load_alpha_vantage_ohlcv(canonical, start_str, end_str)
+                        cache_file = alpha_vantage_data_file
+                        break
+                    if vendor == "tencent":
+                        try:
+                            downloaded = _load_tencent_hk_ohlcv(canonical, start_str, end_str)
+                            cache_file = tencent_data_file
+                            break
+                        except NoMarketDataError:
+                            continue
+                if downloaded is None:
+                    raise
         # Only cache real data — never persist an empty frame.
         if downloaded.empty or "Close" not in downloaded.columns:
             raise NoMarketDataError(
-                symbol, canonical, "Yahoo Finance returned no rows"
+                symbol, canonical, "configured OHLCV providers returned no rows"
             )
-        downloaded.to_csv(data_file, index=False, encoding="utf-8")
+        downloaded.to_csv(cache_file, index=False, encoding="utf-8")
         data = downloaded
 
     data = _clean_dataframe(data)

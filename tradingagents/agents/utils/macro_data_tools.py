@@ -2,6 +2,7 @@ from typing import Annotated
 
 from langchain_core.tools import tool
 
+from tradingagents.agents.utils.tool_validation import MacroInput, validate_tool_input
 from tradingagents.dataflows.interface import route_to_vendor
 
 
@@ -33,4 +34,15 @@ def get_macro_indicators(
     Returns:
         str: A formatted markdown report of the macro series
     """
-    return route_to_vendor("get_macro_indicators", indicator, curr_date, look_back_days)
+    payload = validate_tool_input(
+        MacroInput,
+        indicator=indicator,
+        curr_date=curr_date,
+        look_back_days=look_back_days,
+    )
+    return route_to_vendor(
+        "get_macro_indicators",
+        payload.indicator,
+        payload.curr_date,
+        payload.look_back_days,
+    )

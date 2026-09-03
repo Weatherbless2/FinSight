@@ -81,23 +81,18 @@ class ResearchPlan(BaseModel):
 
     recommendation: PortfolioRating = Field(
         description=(
-            "The investment recommendation. Exactly one of Buy / Overweight / "
-            "Hold / Underweight / Sell. Reserve Hold for situations where the "
-            "evidence on both sides is genuinely balanced; otherwise commit to "
-            "the side with the stronger arguments."
+            "投资建议。只能选择 Buy / Overweight / Hold / Underweight / Sell 之一。"
+            "只有多空证据确实均衡时才使用 Hold，否则请选择论据更强的一方。"
         ),
     )
     rationale: str = Field(
         description=(
-            "Conversational summary of the key points from both sides of the "
-            "debate, ending with which arguments led to the recommendation. "
-            "Speak naturally, as if to a teammate."
+            "用对话式语言总结辩论双方的关键观点，并说明最终促成该建议的论据。"
         ),
     )
     strategic_actions: str = Field(
         description=(
-            "Concrete steps for the trader to implement the recommendation, "
-            "including position sizing guidance consistent with the rating."
+            "给出交易员执行该建议的具体步骤，包括与评级一致的仓位管理指导。"
         ),
     )
 
@@ -128,25 +123,24 @@ class TraderProposal(BaseModel):
     """
 
     action: TraderAction = Field(
-        description="The transaction direction. Exactly one of Buy / Hold / Sell.",
+        description="交易方向。只能选择 Buy / Hold / Sell 之一。",
     )
     reasoning: str = Field(
         description=(
-            "The case for this action, anchored in the analysts' reports and "
-            "the research plan. Two to four sentences."
+            "基于分析师报告和研究计划说明采取该行动的理由，写 2-4 句。"
         ),
     )
     entry_price: float | None = Field(
         default=None,
-        description="Optional entry price target in the instrument's quote currency.",
+        description="可选的入场价格目标，使用该标的的报价货币。",
     )
     stop_loss: float | None = Field(
         default=None,
-        description="Optional stop-loss price in the instrument's quote currency.",
+        description="可选的止损价格，使用该标的的报价货币。",
     )
     position_sizing: str | None = Field(
         default=None,
-        description="Optional sizing guidance, e.g. '5% of portfolio'.",
+        description="可选的仓位指导，例如“占组合 5%”。",
     )
 
     @field_validator("entry_price", "stop_loss", mode="before")
@@ -196,30 +190,26 @@ class PortfolioDecision(BaseModel):
 
     rating: PortfolioRating = Field(
         description=(
-            "The final position rating. Exactly one of Buy / Overweight / Hold / "
-            "Underweight / Sell, picked based on the analysts' debate."
+            "最终持仓评级。根据分析师辩论选择 Buy / Overweight / Hold / Underweight / Sell 之一。"
         ),
     )
     executive_summary: str = Field(
         description=(
-            "A concise action plan covering entry strategy, position sizing, "
-            "key risk levels, and time horizon. Two to four sentences."
+            "简明行动计划，涵盖入场策略、仓位、关键风险位和时间周期，写 2-4 句。"
         ),
     )
     investment_thesis: str = Field(
         description=(
-            "Detailed reasoning anchored in specific evidence from the analysts' "
-            "debate. If prior lessons are referenced in the prompt context, "
-            "incorporate them; otherwise rely solely on the current analysis."
+            "基于分析师辩论中的具体证据进行详细推理。如果 Prompt 中包含历史经验，请纳入分析；否则只依据当前分析。"
         ),
     )
     price_target: float | None = Field(
         default=None,
-        description="Optional target price in the instrument's quote currency.",
+        description="可选的目标价格，使用该标的的报价货币。",
     )
     time_horizon: str | None = Field(
         default=None,
-        description="Optional recommended holding period, e.g. '3-6 months'.",
+        description="可选的建议持有周期，例如“3-6 个月”。",
     )
 
     @field_validator("price_target", mode="before")
@@ -283,44 +273,33 @@ class SentimentReport(BaseModel):
 
     overall_band: SentimentBand = Field(
         description=(
-            "Overall sentiment direction. Exactly one of: "
-            "Bullish / Mildly Bullish / Neutral / Mixed / Mildly Bearish / Bearish. "
-            "Use Mixed when sources point in clearly different directions. "
-            "Use Neutral only when all sources are genuinely silent or non-committal."
+            "总体情绪方向。只能选择 Bullish / Mildly Bullish / Neutral / Mixed / Mildly Bearish / Bearish 之一。"
+            "当来源方向明显不一致时使用 Mixed；只有所有来源确实沉默或没有明确观点时才使用 Neutral。"
         ),
     )
     overall_score: float = Field(
         ge=0.0,
         le=10.0,
         description=(
-            "Numeric sentiment intensity on a 0–10 scale. "
-            "0 = maximally bearish, 5 = neutral, 10 = maximally bullish. "
-            "Guideline for consistency with overall_band: "
-            "Bullish ~6.5–10, Mildly Bullish ~5.5–6.4, Neutral/Mixed ~4.5–5.5, "
-            "Mildly Bearish ~3.5–4.4, Bearish ~0–3.4. "
-            "Only the 0–10 bounds are enforced."
+            "情绪强度数字，范围 0-10。0 表示极度看空，5 表示中性，10 表示极度看多。"
+            "建议与 overall_band 一致：Bullish 约 6.5-10，Mildly Bullish 约 5.5-6.4，"
+            "Neutral/Mixed 约 4.5-5.5，Mildly Bearish 约 3.5-4.4，Bearish 约 0-3.4。"
+            "只强制校验 0-10 的范围。"
         ),
     )
     confidence: Literal["low", "medium", "high"] = Field(
         description=(
-            "Confidence in the assessment based on data quality and sample size. "
-            "Use 'low' when one or more sources returned a placeholder or fewer "
-            "than 5 data points; 'medium' when data is present but sparse; "
-            "'high' when all three sources returned substantive data."
+            "根据数据质量和样本量评估置信度。某来源返回占位符或少于 5 条数据时使用 low；"
+            "数据存在但较少时使用 medium；三个来源都有充分数据时使用 high。"
         ),
     )
     narrative: str = Field(
         description=(
-            "Full sentiment report covering, in order: "
-            "(1) source-by-source breakdown with specific evidence (cite message "
-            "counts, ratios, notable posts); "
-            "(2) cross-source divergences and alignments; "
-            "(3) dominant narrative themes; "
-            "(4) catalysts and risks surfaced by the data; "
-            "(5) a markdown table summarising key sentiment signals, their "
-            "direction, source, and supporting evidence. "
-            "Keep it informative and substantive: develop each section thoroughly "
-            "with concrete evidence so every point adds new signal for the trader."
+            "完整的情绪报告，按以下顺序覆盖："
+            "（1）逐来源分析并引用具体证据（消息数量、比例、代表性帖子）；"
+            "（2）来源之间的背离和一致；（3）主导叙事主题；（4）数据揭示的催化剂和风险；"
+            "（5）用 Markdown 表格总结关键情绪信号、方向、来源和支持证据。"
+            "内容要有信息量和实质性，每一部分都应使用具体证据，为交易员提供新的信号。"
         ),
     )
 

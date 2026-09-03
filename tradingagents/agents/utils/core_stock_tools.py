@@ -2,6 +2,7 @@ from typing import Annotated
 
 from langchain_core.tools import tool
 
+from tradingagents.agents.utils.tool_validation import StockDataInput, validate_tool_input
 from tradingagents.dataflows.interface import route_to_vendor
 
 
@@ -21,4 +22,12 @@ def get_stock_data(
     Returns:
         str: A formatted dataframe containing the stock price data for the specified ticker symbol in the specified date range.
     """
-    return route_to_vendor("get_stock_data", symbol, start_date, end_date)
+    payload = validate_tool_input(
+        StockDataInput,
+        symbol=symbol,
+        start_date=start_date,
+        end_date=end_date,
+    )
+    return route_to_vendor(
+        "get_stock_data", payload.symbol, payload.start_date, payload.end_date
+    )

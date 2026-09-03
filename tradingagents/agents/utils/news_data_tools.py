@@ -2,6 +2,12 @@ from typing import Annotated
 
 from langchain_core.tools import tool
 
+from tradingagents.agents.utils.tool_validation import (
+    GlobalNewsInput,
+    InsiderInput,
+    NewsInput,
+    validate_tool_input,
+)
 from tradingagents.dataflows.interface import route_to_vendor
 
 
@@ -21,7 +27,15 @@ def get_news(
     Returns:
         str: A formatted string containing news data
     """
-    return route_to_vendor("get_news", ticker, start_date, end_date)
+    payload = validate_tool_input(
+        NewsInput,
+        ticker=ticker,
+        start_date=start_date,
+        end_date=end_date,
+    )
+    return route_to_vendor(
+        "get_news", payload.ticker, payload.start_date, payload.end_date
+    )
 
 @tool
 def get_global_news(
@@ -43,7 +57,15 @@ def get_global_news(
     Returns:
         str: A formatted string containing global news data
     """
-    return route_to_vendor("get_global_news", curr_date, look_back_days, limit)
+    payload = validate_tool_input(
+        GlobalNewsInput,
+        curr_date=curr_date,
+        look_back_days=look_back_days,
+        limit=limit,
+    )
+    return route_to_vendor(
+        "get_global_news", payload.curr_date, payload.look_back_days, payload.limit
+    )
 
 @tool
 def get_insider_transactions(
@@ -57,4 +79,5 @@ def get_insider_transactions(
     Returns:
         str: A report of insider transaction data
     """
-    return route_to_vendor("get_insider_transactions", ticker)
+    payload = validate_tool_input(InsiderInput, ticker=ticker)
+    return route_to_vendor("get_insider_transactions", payload.ticker)

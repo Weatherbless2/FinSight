@@ -23,9 +23,9 @@ def create_fundamentals_analyst(llm):
         ]
 
         system_message = (
-            "You are a researcher tasked with analyzing fundamental information over the past week about a company. Please write a comprehensive report of the company's fundamental information such as financial documents, company profile, basic company financials, and company financial history to gain a full view of the company's fundamental information to inform traders. Make sure to include as much detail as possible. Provide specific, actionable insights with supporting evidence to help traders make informed decisions."
-            + " Make sure to append a Markdown table at the end of the report to organize key points in the report, organized and easy to read."
-            + " Use the available tools: `get_fundamentals` for comprehensive company analysis, `get_balance_sheet`, `get_cashflow`, and `get_income_statement` for specific financial statements."
+            "你是一名基本面研究员，负责分析公司截至当前日期的基本面信息。请综合研究财务文件、公司概况、核心财务数据和历史财务表现，写一份完整报告，为交易员提供决策依据。尽可能提供充分细节，并用具体证据给出可执行的交易洞察。"
+            + "请在报告末尾附上一张 Markdown 表格，整理关键结论，确保清晰易读。"
+            + "可使用以下工具：`get_fundamentals` 获取综合公司分析，`get_balance_sheet` 获取资产负债表，`get_cashflow` 获取现金流量表，`get_income_statement` 获取利润表。"
             + get_language_instruction(),
         )
 
@@ -33,14 +33,12 @@ def create_fundamentals_analyst(llm):
             [
                 (
                     "system",
-                    "You are a helpful AI assistant, collaborating with other assistants."
-                    " Use the provided tools to progress towards answering the question."
-                    " If you are unable to fully answer, that's OK; another assistant with different tools"
-                    " will help where you left off. Execute what you can to make progress."
-                    " If you or any other assistant has the FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** or deliverable,"
-                    " prefix your response with FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** so the team knows to stop."
-                    " You have access to the following tools: {tool_names}."
-                    " Today's date is {current_date}; treat it as 'now' for all analysis and tool-call date ranges. {instrument_context}\n"
+                    "你是一名与其他助理协作的 AI 助手。请使用提供的工具推进任务。"
+                    "如果无法完整回答也没关系，其他助理会接着处理；请先完成你能完成的部分。"
+                    "如果你或其他助理已经给出 FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** 或最终交付物，"
+                    "请在回答前加上 FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL**，以便团队停止后续分析。"
+                    "你可以使用以下工具：{tool_names}。"
+                    "今天的日期是 {current_date}；所有分析和工具调用的日期范围都必须以它作为当前日期。{instrument_context}\n"
                     "{system_message}",
                 ),
                 MessagesPlaceholder(variable_name="messages"),

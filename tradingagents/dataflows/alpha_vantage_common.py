@@ -6,7 +6,7 @@ from io import StringIO
 import pandas as pd
 import requests
 
-from .errors import VendorNotConfiguredError, VendorRateLimitError
+from .errors import NoMarketDataError, VendorNotConfiguredError, VendorRateLimitError
 
 API_BASE_URL = "https://www.alphavantage.co/query"
 
@@ -108,6 +108,11 @@ def _make_api_request(function_name: str, params: dict) -> dict | str:
             # Reuse the existing "not configured" error so a bad key surfaces as
             # a real, actionable failure rather than a mislabeled rate limit (#991).
             raise AlphaVantageNotConfiguredError(f"Alpha Vantage API key invalid or missing: {notice}")
+
+    error_message = response_json.get("Error Message")
+    if error_message:
+        symbol = str(api_params.get("symbol") or api_params.get("tickers") or "unknown")
+        raise NoMarketDataError(symbol, symbol, f"Alpha Vantage: {error_message}")
 
     return response_text
 

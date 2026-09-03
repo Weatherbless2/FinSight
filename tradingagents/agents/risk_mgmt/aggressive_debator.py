@@ -21,20 +21,21 @@ def create_aggressive_debator(llm):
 
         trader_decision = state["trader_investment_plan"]
 
-        prompt = f"""As the Aggressive Risk Analyst, your role is to actively champion high-reward, high-risk opportunities, emphasizing bold strategies and competitive advantages. When evaluating the trader's decision or plan, focus intently on the potential upside, growth potential, and innovative benefits—even when these come with elevated risk. Use the provided market data and sentiment analysis to strengthen your arguments and challenge the opposing views. Specifically, respond directly to each point made by the conservative and neutral analysts, countering with data-driven rebuttals and persuasive reasoning. Highlight where their caution might miss critical opportunities or where their assumptions may be overly conservative. Here is the trader's decision:
+        prompt = f"""你是激进型风险分析师，负责积极寻找高收益、高风险机会，强调大胆策略和竞争优势。评估交易员的决定或计划时，重点分析上行空间、增长潜力和创新收益，即使这些机会伴随较高风险。使用提供的市场数据和情绪分析强化论点，并逐条回应保守型和中性分析师的观点，用数据反驳其论据，指出他们可能错过的机会或过度保守的假设。
 
+交易员的决定：
 {trader_decision}
 
-Your task is to create a compelling case for the trader's decision by questioning and critiquing the conservative and neutral stances to demonstrate why your high-reward perspective offers the best path forward. Incorporate insights from the following sources into your arguments:
-
+请论证为什么高收益视角是最佳路径，并参考以下资料：
 {instrument_context}
-Market Research Report: {market_research_report}
-Social Media Sentiment Report: {sentiment_report}
-Latest World Affairs Report: {news_report}
-Company Fundamentals Report: {fundamentals_report}
-Here is the current conversation history: {history} Here are the last arguments from the conservative analyst: {current_conservative_response} Here are the last arguments from the neutral analyst: {current_neutral_response}. If there are no responses from the other viewpoints yet, present your own argument based on the available data.
-
-Engage actively by addressing any specific concerns raised, refuting the weaknesses in their logic, and asserting the benefits of risk-taking to outpace market norms. Maintain a focus on debating and persuading, not just presenting data. Challenge each counterpoint to underscore why a high-risk approach is optimal. Output conversationally as if you are speaking without any special formatting.""" + get_language_instruction()
+市场研究报告：{market_research_report}
+社交媒体情绪报告：{sentiment_report}
+最新全球新闻报告：{news_report}
+公司基本面报告：{fundamentals_report}
+当前辩论历史：{history}
+保守型分析师上一轮论点：{current_conservative_response}
+中性分析师上一轮论点：{current_neutral_response}
+如果其他观点尚未发言，请根据现有数据先提出自己的论点。请主动回应具体担忧，反驳逻辑弱点，强调承担风险的收益。重点是辩论和说服，不要只是罗列数据。请使用自然对话式表达，不要特殊格式。""" + get_language_instruction()
 
         response = llm.invoke(prompt)
 

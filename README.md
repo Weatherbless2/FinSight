@@ -1,3 +1,32 @@
+# TradeAgent：面试驱动的金融多智能体工程实践
+
+本仓库基于 TauricResearch 的开源项目 TradingAgents 继续学习和改造，目标不是包装成自动实盘系统，而是用真实代码、测试和量化结果掌握 Agent 工程化能力，并能回答面试中的架构、工具调用、状态管理、可靠性和评测问题。
+
+## 学习入口
+
+| 内容 | 文档 |
+| --- | --- |
+| 完整阶段和工单路线 | [智能体学习与完善路线](docs/AGENT_LEARNING_ROADMAP.md) |
+| 从环境、代码到测试的复现命令 | [亲手复现手册](docs/LEARNING_RUNBOOK.md) |
+| 为什么选择 LangChain、LangGraph 和固定工作流 | [架构选型记录](docs/ADR-001-architecture-decision.md) |
+| B-01 工具输入校验的实现与指标 | [工具输入校验工单](docs/B-01-tool-input-validation.md) |
+| 本项目配套 Codex Skill | [tradingagents-agent-growth](skills/tradingagents-agent-growth/SKILL.md) |
+
+## 当前进度
+
+- 已完成 A-01～A-05：运行链、状态流转、工具循环、路由保护和架构选型。
+- 已完成 B-01：13 个 LLM-facing 工具的统一 Pydantic 输入校验。
+- 当前全量回归基线：609 passed、2 skipped、18 warnings、69 个子测试。
+- 下一张工单：B-02，统一工具成功、失败、重试和来源信息的结果契约。
+
+> 项目用于研究、模拟决策和工程学习，不构成投资建议，也没有接入真实券商自动下单。
+
+## 上游项目
+
+原始项目：[TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents)。本仓库保留原许可证、说明和引用信息，以下为上游 README 内容。
+
+---
+
 <p align="center">
   <img src="assets/TauricResearch.png" style="width: 60%; height: auto;">
 </p>

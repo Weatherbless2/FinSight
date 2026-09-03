@@ -994,6 +994,19 @@ def _build_run_config(selections: dict, checkpoint: bool | None) -> dict:
     config["openai_reasoning_effort"] = selections.get("openai_reasoning_effort")
     config["anthropic_effort"] = selections.get("anthropic_effort")
     config["output_language"] = selections.get("output_language", "English")
+    # A configured Alpha Vantage key provides a reliable fallback when Yahoo
+    # Finance returns HTTP 429. Put it first for CLI runs so a known Yahoo
+    # throttle does not make every tool call wait through yfinance retries.
+    if os.environ.get("ALPHA_VANTAGE_API_KEY"):
+        data_vendors = config["data_vendors"].copy()
+        for category in (
+            "core_stock_apis",
+            "fundamental_data",
+            "news_data",
+        ):
+            if data_vendors.get(category) == "yfinance":
+                data_vendors[category] = "tencent,alpha_vantage,yfinance"
+        config["data_vendors"] = data_vendors
     # --checkpoint/--no-checkpoint overrides only when explicitly given; omitting
     # the flag preserves TRADINGAGENTS_CHECKPOINT_ENABLED / the default (#976).
     if checkpoint is not None:
