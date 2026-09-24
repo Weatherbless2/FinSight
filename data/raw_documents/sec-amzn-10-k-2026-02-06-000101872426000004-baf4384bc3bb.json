@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "sec-amzn-10-k-2026-02-06-000101872426000004",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231.htm",
+  "source_hash": "baf4384bc3bb5906d547ef416f4d91010664f5283bba10dbadcabdf121c0496d",
+  "content_type": "text/html",
+  "byte_count": 1968818,
+  "fetched_at": "2026-09-24T08:53:00.320771+00:00",
+  "metadata": {
+    "document_id": "sec-amzn-10-k-2026-02-06-000101872426000004",
+    "ticker": "AMZN",
+    "document_type": "annual_report",
+    "title": "AMAZON COM INC 10-K filing",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231.htm",
+    "source_hash": "baf4384bc3bb5906d547ef416f4d91010664f5283bba10dbadcabdf121c0496d",
+    "published_at": "2026-02-06",
+    "available_at": "2026-02-06",
+    "fiscal_period": null,
+    "period_end": "2025-12-31",
+    "language": "en"
+  }
+}

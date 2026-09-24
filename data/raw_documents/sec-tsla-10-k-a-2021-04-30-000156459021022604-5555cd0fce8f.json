@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "sec-tsla-10-k-a-2021-04-30-000156459021022604",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000156459021022604/tsla-10ka_20201231.htm",
+  "source_hash": "5555cd0fce8f34bd851d9a75efb899546e799854374662eddc0e2dc4249a585a",
+  "content_type": "text/html",
+  "byte_count": 2039132,
+  "fetched_at": "2026-09-24T03:13:33.283048+00:00",
+  "metadata": {
+    "document_id": "sec-tsla-10-k-a-2021-04-30-000156459021022604",
+    "ticker": "TSLA",
+    "document_type": "annual_report",
+    "title": "Tesla, Inc. 10-K/A filing",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000156459021022604/tsla-10ka_20201231.htm",
+    "source_hash": "5555cd0fce8f34bd851d9a75efb899546e799854374662eddc0e2dc4249a585a",
+    "published_at": "2021-04-30",
+    "available_at": "2021-04-30",
+    "fiscal_period": null,
+    "period_end": "2020-12-31",
+    "language": "en"
+  }
+}

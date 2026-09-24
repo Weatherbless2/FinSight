@@ -9,6 +9,8 @@ description = "TradingAgents: Multi-Agents LLM Financial Trading Framework"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "fastapi>=0.115.0",
+    "celery>=5.4.0",
     "langchain-core>=0.3.81",
     "backtrader>=1.9.78.123",
     "langchain-anthropic>=0.3.15",
@@ -25,11 +27,13 @@ dependencies = [
     "redis>=6.2.0",
     "requests>=2.32.4",
     "rich>=14.0.0",
+    "SQLAlchemy>=2.0.0",
     "typer>=0.21.0",
     "setuptools>=80.9.0",
     "stockstats>=0.6.5",
     "tqdm>=4.67.1",
     "typing-extensions>=4.14.0",
+    "uvicorn[standard]>=0.34.0",
     "yfinance>=1.4.1",
 ]
 
@@ -43,6 +47,11 @@ dev = [
 # stays lean: pip install "tradingagents[bedrock]".
 bedrock = [
     "langchain-aws>=1.5.0",
+]
+# PostgreSQL + pgvector runtime. The core package keeps psycopg optional so
+# local tests and the existing SQLite checkpoint path do not require a server.
+postgres = [
+    "psycopg[binary]>=3.2.0",
 ]
 
 [project.scripts]

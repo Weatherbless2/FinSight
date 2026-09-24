@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "nvda-2026q1-release",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000115/nvda-20250528.htm",
+  "source_hash": "e8d4317bf78a323a8081084d19053a11bd43e3dd682338e27091a2e14b6fe834",
+  "content_type": "text/html",
+  "byte_count": 25029,
+  "fetched_at": "2026-09-22T05:17:09.031059+00:00",
+  "metadata": {
+    "document_id": "nvda-2026q1-release",
+    "ticker": "NVDA",
+    "document_type": "earnings_release",
+    "title": "NVIDIA Corporation 2026 Q1 Earnings Release",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000115/nvda-20250528.htm",
+    "source_hash": "e8d4317bf78a323a8081084d19053a11bd43e3dd682338e27091a2e14b6fe834",
+    "published_at": "2025-05-28",
+    "available_at": "2025-05-28",
+    "fiscal_period": "2026-Q1",
+    "period_end": null,
+    "language": "en"
+  }
+}

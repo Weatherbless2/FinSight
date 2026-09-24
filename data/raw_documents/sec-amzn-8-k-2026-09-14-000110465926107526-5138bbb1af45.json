@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "sec-amzn-8-k-2026-09-14-000110465926107526",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000110465926107526/tm2624614d5_8k.htm",
+  "source_hash": "5138bbb1af45b13c214e7a7111fe96b3b1e315720741c8b8e7c2355b036c1493",
+  "content_type": "text/html",
+  "byte_count": 60338,
+  "fetched_at": "2026-09-24T08:52:57.112320+00:00",
+  "metadata": {
+    "document_id": "sec-amzn-8-k-2026-09-14-000110465926107526",
+    "ticker": "AMZN",
+    "document_type": "announcement",
+    "title": "AMAZON COM INC 8-K filing",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000110465926107526/tm2624614d5_8k.htm",
+    "source_hash": "5138bbb1af45b13c214e7a7111fe96b3b1e315720741c8b8e7c2355b036c1493",
+    "published_at": "2026-09-14",
+    "available_at": "2026-09-14",
+    "fiscal_period": null,
+    "period_end": "2026-09-14",
+    "language": "en"
+  }
+}

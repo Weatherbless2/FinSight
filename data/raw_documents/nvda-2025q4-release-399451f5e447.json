@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "nvda-2025q4-release",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000021/nvda-20250226.htm",
+  "source_hash": "399451f5e447b535811412c50f874376d3780d61a05107f7e56092304dee206f",
+  "content_type": "text/html",
+  "byte_count": 25096,
+  "fetched_at": "2026-09-22T05:17:02.781951+00:00",
+  "metadata": {
+    "document_id": "nvda-2025q4-release",
+    "ticker": "NVDA",
+    "document_type": "earnings_release",
+    "title": "NVIDIA Corporation 2025 Q4 Earnings Release",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000021/nvda-20250226.htm",
+    "source_hash": "399451f5e447b535811412c50f874376d3780d61a05107f7e56092304dee206f",
+    "published_at": "2025-02-26",
+    "available_at": "2025-02-26",
+    "fiscal_period": "2025-Q4",
+    "period_end": null,
+    "language": "en"
+  }
+}

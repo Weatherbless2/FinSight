@@ -113,17 +113,30 @@ def _fetch_subreddit_rss(
         if exc.code == 429 and _retry:
             wait = _retry_after_seconds(exc) or 5.0
             logger.warning(
-                "Reddit RSS 429 for r/%s · %s — backing off %.1fs then retrying once",
+                "[数据源限流] Reddit RSS 被限流：subreddit=r/%s，ticker=%s；"
+                "等待 %.1f 秒后仅重试一次。",
                 sub, ticker, wait,
             )
             time.sleep(wait)
             return _fetch_subreddit_rss(ticker, sub, limit, timeout, _retry=False)
-        logger.warning("Reddit RSS fetch failed for r/%s · %s: %s", sub, ticker, exc)
+        logger.warning(
+            "[数据源降级] Reddit RSS 获取失败：subreddit=r/%s，ticker=%s，原因=%s；"
+            "返回空结果，分析流程继续。",
+            sub,
+            ticker,
+            exc,
+        )
         return []
     except (OSError, http.client.HTTPException, ET.ParseError) as exc:
         # OSError covers URLError/TimeoutError/connection resets; HTTPException
         # covers chunked-transfer errors (IncompleteRead/BadStatusLine, #1024).
-        logger.warning("Reddit RSS fetch failed for r/%s · %s: %s", sub, ticker, exc)
+        logger.warning(
+            "[数据源降级] Reddit RSS 获取失败：subreddit=r/%s，ticker=%s，原因=%s；"
+            "返回空结果，分析流程继续。",
+            sub,
+            ticker,
+            exc,
+        )
         return []
 
     posts = []
@@ -167,8 +180,11 @@ def _fetch_subreddit_json(
         return [c.get("data", {}) for c in children if isinstance(c, dict)]
     except (OSError, http.client.HTTPException, json.JSONDecodeError) as exc:
         logger.warning(
-            "Reddit JSON fetch failed for r/%s · %s: %s — falling back to RSS feed.",
-            sub, ticker, exc,
+            "[数据源降级] Reddit JSON 获取失败：subreddit=r/%s，ticker=%s，原因=%s；"
+            "改用 RSS 备用接口。",
+            sub,
+            ticker,
+            exc,
         )
         return _fetch_subreddit_rss(ticker, sub, limit, timeout)
 

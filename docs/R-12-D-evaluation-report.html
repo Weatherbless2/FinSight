@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TradeAgent R-12-D 真实 RAG 评测报告</title>
+  <style>
+    :root { --ink:#172033; --muted:#627089; --line:#dbe2ec; --paper:#f6f8fb; --green:#16805c; --blue:#2f6fed; --gold:#c27a00; }
+    * { box-sizing:border-box; } body { margin:0; background:var(--paper); color:var(--ink); font:15px/1.7 system-ui,-apple-system,"Microsoft YaHei",sans-serif; }
+    main { max-width:1120px; margin:0 auto; padding:48px 28px 72px; }
+    h1 { margin:8px 0 12px; font-size:34px; line-height:1.2; } h2 { margin:40px 0 12px; font-size:22px; } h3 { margin:22px 0 8px; font-size:17px; }
+    .eyebrow { color:var(--blue); font-size:12px; font-weight:700; letter-spacing:.12em; } .lead { color:var(--muted); max-width:850px; }
+    .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:24px 0; } .stat,.panel { background:#fff; border:1px solid var(--line); border-radius:8px; padding:18px; }
+    .stat b { display:block; font-size:26px; line-height:1.2; } .stat span { color:var(--muted); font-size:13px; }
+    table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); } th,td { padding:11px 12px; border-bottom:1px solid var(--line); text-align:right; } th:first-child,td:first-child { text-align:left; } th { background:#eef3f9; font-size:13px; }
+    .charts { display:grid; grid-template-columns:1fr 1fr; gap:16px; } .chart { width:100%; height:auto; background:#fff; border:1px solid var(--line); border-radius:8px; padding:14px; } .chart text { fill:var(--muted); font:12px system-ui,sans-serif; }
+    code,pre { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; } pre { overflow:auto; background:#172033; color:#edf3ff; padding:16px; border-radius:8px; font-size:13px; }
+    .ok { color:var(--green); font-weight:700; } .note { border-left:4px solid var(--gold); padding:10px 14px; background:#fff8e8; } .flow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; } .step { background:#fff; border:1px solid var(--line); border-radius:6px; padding:8px 12px; }
+    li { margin:6px 0; } @media(max-width:760px) { .grid,.charts { grid-template-columns:1fr 1fr; } main { padding:28px 16px 56px; } table { font-size:12px; display:block; overflow:auto; white-space:nowrap; } }
+  </style>
+</head>
+<body><main>
+  <div class="eyebrow">TRADEAGENT / R-12-D / REAL EVALUATION</div>
+  <h1>四种检索策略真实评测报告</h1>
+  <p class="lead">本报告使用真实 PostgreSQL + pgvector 数据、Ollama Embedding 和固定 30 道金融问题，比较关键词、向量、Hybrid 与受约束 Agentic Retrieval。报告中的指标均由本次运行生成，不是估算值。</p>
+
+  <div class="grid">
+    <div class="stat"><b>30</b><span>固定评测问题</span></div>
+    <div class="stat"><b>13</b><span>PostgreSQL 文档</span></div>
+    <div class="stat"><b>1092</b><span>真实 Chunk</span></div>
+    <div class="stat"><b class="ok">1092/1092</b><span>Embedding 成功</span></div>
+  </div>
+
+  <h2>1. 执行链路</h2>
+  <div class="flow"><span class="step">固定问题集</span><b>→</b><span class="step">股票 + 日期过滤</span><b>→</b><span class="step">PostgreSQL 检索</span><b>→</b><span class="step">Observation</span><b>→</b><span class="step">统一指标报告</span></div>
+  <p>所有策略使用同一批问题、同一个交易日期和同一批真实文档。数据库层先执行 <code>ticker</code> 与 <code>available_at &lt;= trade_date</code>，再执行关键词、向量或融合排序。</p>
+
+  <h2>2. 实测指标</h2>
+  <table><thead><tr><th>策略</th><th>Recall@5</th><th>MRR</th><th>引用覆盖率</th><th>无依据结论率</th><th>未来泄露率</th><th>P95 延迟</th><th>平均 Token</th></tr></thead><tbody><tr><td><strong>keyword</strong></td><td>80.56%</td><td>0.750</td><td>88.33%</td><td>未评测</td><td>0.00%</td><td>6.990 ms</td><td>23.600</td></tr><tr><td><strong>vector</strong></td><td>100.00%</td><td>0.870</td><td>100.00%</td><td>未评测</td><td>0.00%</td><td>56.580 ms</td><td>23.600</td></tr><tr><td><strong>hybrid</strong></td><td>97.22%</td><td>0.870</td><td>98.33%</td><td>未评测</td><td>0.00%</td><td>55.803 ms</td><td>23.600</td></tr><tr><td><strong>agentic</strong></td><td>83.33%</td><td>0.833</td><td>90.00%</td><td>未评测</td><td>0.00%</td><td>59.951 ms</td><td>23.600</td></tr></tbody></table>
+  <p class="note"><strong>解释：</strong>本次是检索层评测，没有调用回答模型，因此“无依据结论率”为“未评测”，平均 Token 是查询文本估算 Token，不是 LLM 生成成本。未来泄露率为 0 是金融安全验收项。</p>
+
+  <div class="charts"><div><h3>Recall@5</h3><svg class="chart" viewBox="0 0 620 230" role="img" aria-label="recall_at_5 对比图"><line x1="24" y1="184" x2="600" y2="184" stroke="#b6becb" /><rect x="32" y="63.2" width="76" height="120.8" fill="#2f6fed" rx="4" /><text x="70" y="55.2" text-anchor="middle">80.56%</text><text x="70" y="208" text-anchor="middle">keyword</text><rect x="174" y="34.0" width="76" height="150.0" fill="#16805c" rx="4" /><text x="212" y="26.0" text-anchor="middle">100.00%</text><text x="212" y="208" text-anchor="middle">vector</text><rect x="316" y="38.2" width="76" height="145.8" fill="#c27a00" rx="4" /><text x="354" y="30.2" text-anchor="middle">97.22%</text><text x="354" y="208" text-anchor="middle">hybrid</text><rect x="458" y="59.0" width="76" height="125.0" fill="#9b4dca" rx="4" /><text x="496" y="51.0" text-anchor="middle">83.33%</text><text x="496" y="208" text-anchor="middle">agentic</text></svg></div><div><h3>MRR</h3><svg class="chart" viewBox="0 0 620 230" role="img" aria-label="mrr 对比图"><line x1="24" y1="184" x2="600" y2="184" stroke="#b6becb" /><rect x="32" y="54.7" width="76" height="129.3" fill="#2f6fed" rx="4" /><text x="70" y="46.7" text-anchor="middle">0.750</text><text x="70" y="208" text-anchor="middle">keyword</text><rect x="174" y="34.0" width="76" height="150.0" fill="#16805c" rx="4" /><text x="212" y="26.0" text-anchor="middle">0.870</text><text x="212" y="208" text-anchor="middle">vector</text><rect x="316" y="34.0" width="76" height="150.0" fill="#c27a00" rx="4" /><text x="354" y="26.0" text-anchor="middle">0.870</text><text x="354" y="208" text-anchor="middle">hybrid</text><rect x="458" y="40.4" width="76" height="143.6" fill="#9b4dca" rx="4" /><text x="496" y="32.4" text-anchor="middle">0.833</text><text x="496" y="208" text-anchor="middle">agentic</text></svg></div><div><h3>P95 延迟</h3><svg class="chart" viewBox="0 0 620 230" role="img" aria-label="p95_latency_ms 对比图"><line x1="24" y1="184" x2="600" y2="184" stroke="#b6becb" /><rect x="32" y="166.5" width="76" height="17.5" fill="#2f6fed" rx="4" /><text x="70" y="158.5" text-anchor="middle">6.990</text><text x="70" y="208" text-anchor="middle">keyword</text><rect x="174" y="42.4" width="76" height="141.6" fill="#16805c" rx="4" /><text x="212" y="34.4" text-anchor="middle">56.580</text><text x="212" y="208" text-anchor="middle">vector</text><rect x="316" y="44.4" width="76" height="139.6" fill="#c27a00" rx="4" /><text x="354" y="36.4" text-anchor="middle">55.803</text><text x="354" y="208" text-anchor="middle">hybrid</text><rect x="458" y="34.0" width="76" height="150.0" fill="#9b4dca" rx="4" /><text x="496" y="26.0" text-anchor="middle">59.951</text><text x="496" y="208" text-anchor="middle">agentic</text></svg></div><div><h3>引用覆盖率</h3><svg class="chart" viewBox="0 0 620 230" role="img" aria-label="citation_coverage 对比图"><line x1="24" y1="184" x2="600" y2="184" stroke="#b6becb" /><rect x="32" y="51.5" width="76" height="132.5" fill="#2f6fed" rx="4" /><text x="70" y="43.5" text-anchor="middle">88.33%</text><text x="70" y="208" text-anchor="middle">keyword</text><rect x="174" y="34.0" width="76" height="150.0" fill="#16805c" rx="4" /><text x="212" y="26.0" text-anchor="middle">100.00%</text><text x="212" y="208" text-anchor="middle">vector</text><rect x="316" y="36.5" width="76" height="147.5" fill="#c27a00" rx="4" /><text x="354" y="28.5" text-anchor="middle">98.33%</text><text x="354" y="208" text-anchor="middle">hybrid</text><rect x="458" y="49.0" width="76" height="135.0" fill="#9b4dca" rx="4" /><text x="496" y="41.0" text-anchor="middle">90.00%</text><text x="496" y="208" text-anchor="middle">agentic</text></svg></div></div>
+
+  <h2>3. 结果解读</h2>
+  <ul>
+    <li><strong>向量检索：</strong>本次 Recall@5 为 100%，对中文问题和英文财报之间的语义匹配最稳定；P95 为 56.580 ms。</li>
+    <li><strong>Hybrid：</strong>Recall@5 为 97.22%，MRR 为 0.8704；同时使用全文词项和向量相似度，P95 为 55.803 ms。</li>
+    <li><strong>关键词：</strong>Recall@5 为 80.56%，P95 仅 6.990 ms，适合股票代码、明确财报术语等精确查询。</li>
+    <li><strong>Agentic：</strong>复用了有限轮数、查询次数和上下文预算；本次结果低于向量基线，说明“增加 Agent”不会自动带来效果提升，仍需要针对查询改写和停止条件优化。</li>
+  </ul>
+
+  <h2>4. 真实运行命令</h2>
+  <pre>DB_URL='postgresql+psycopg://tradingagents:tradingagents_dev_only@127.0.0.1:55432/tradingagents'
+.venv/bin/python scripts/run_real_rag_eval.py   --database-url "$DB_URL"   --output results/rag_eval/strategy_outputs.json
+.venv/bin/python scripts/run_rag_eval.py   --fixture tests/fixtures/rag_eval_cases.json   --outputs results/rag_eval/strategy_outputs.json   --output-dir results/rag_eval</pre>
+
+  <h2>5. 关键实现</h2>
+  <pre># 先做金融安全过滤，再做向量排序
+WHERE d.ticker = :ticker
+  AND d.available_at &lt;= :as_of
+  AND c.embedding IS NOT NULL
+ORDER BY c.embedding &lt;=&gt; CAST(:query_vector AS vector)
+LIMIT :limit
+
+# Hybrid 用两路排名做 Reciprocal Rank Fusion
+score = sum(1 / (rrf_k + rank) for rank in keyword_rank, vector_rank)</pre>
+  <p>这段设计的业务含义是：模型或检索策略不能绕过日期边界。即使未来文档与问题语义非常相似，也会在数据库候选阶段被排除。</p>
+
+  <h2>6. 面试说法</h2>
+  <p><strong>30 秒版本：</strong>我先把真实 SEC 财报和公告清洗切成 1,092 个 Chunk，写入 PostgreSQL，并用 Ollama 生成 1,092 条 1,536 维向量。随后固定 30 道投研问题，使用相同的股票和交易日期，比较关键词、向量、Hybrid 和受约束 Agentic 四种检索。实测向量 Recall@5 为 100%，Hybrid 为 97.22%，关键词为 80.56%，四种策略未来泄露率都是 0；同时记录 P95 延迟，避免只凭主观感觉说 RAG 有提升。</p>
+  <p><strong>为什么没有直接选 Agentic？</strong> Agentic 增加了查询改写和策略决策能力，但也增加了路径不确定性和耗时。本次评测中 Agentic Recall@5 为 83.33%，低于向量基线，所以后续应先分析 Bad Case，再调整查询改写、停止条件和融合排序，而不是盲目增加 Agent 轮数。</p>
+
+  <h2>7. 当前限制和下一步</h2>
+  <ul>
+    <li>本次评测覆盖的是检索层；回答模型尚未接入，因此无依据结论率和生成 Token 成本还没有实测值。</li>
+    <li>下一张工单是把真实检索结果接入基本面分析师，验证“检索 → 证据校验 → Agent 报告”的端到端链路。</li>
+    <li>Agentic 策略存在一个 MSFT 推理题的部分召回 Bad Case，需要在 R-13 前单独记录和优化。</li>
+  </ul>
+  <p class="lead">生成时间：2026-09-22T05:33:52.591857Z · 数据来源：PostgreSQL + pgvector + Ollama nomic-embed-text</p>
+</main></body></html>

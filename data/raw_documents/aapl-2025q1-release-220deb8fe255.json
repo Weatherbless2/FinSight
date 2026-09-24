@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "aapl-2025q1-release",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000007/aapl-20250130.htm",
+  "source_hash": "220deb8fe2553bb20c6e29b9d324cef91e038ed7d97df7cb25bfa41b8ed4742f",
+  "content_type": "text/html",
+  "byte_count": 40924,
+  "fetched_at": "2026-09-22T05:16:46.043285+00:00",
+  "metadata": {
+    "document_id": "aapl-2025q1-release",
+    "ticker": "AAPL",
+    "document_type": "earnings_release",
+    "title": "Apple Inc. 2025 Q1 Earnings Release",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000007/aapl-20250130.htm",
+    "source_hash": "220deb8fe2553bb20c6e29b9d324cef91e038ed7d97df7cb25bfa41b8ed4742f",
+    "published_at": "2025-01-31",
+    "available_at": "2025-01-31",
+    "fiscal_period": "2025-Q1",
+    "period_end": null,
+    "language": "en"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "sec-tsla-8-k-2025-01-02-000162828025000007",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025000007/tsla-20250102.htm",
+  "source_hash": "6e735a27eb66f617cce5baccc829c15a06befc4c4c45d2714b4f1d578af7cd8d",
+  "content_type": "text/html",
+  "byte_count": 27961,
+  "fetched_at": "2026-09-24T03:13:27.805600+00:00",
+  "metadata": {
+    "document_id": "sec-tsla-8-k-2025-01-02-000162828025000007",
+    "ticker": "TSLA",
+    "document_type": "announcement",
+    "title": "Tesla, Inc. 8-K filing",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025000007/tsla-20250102.htm",
+    "source_hash": "6e735a27eb66f617cce5baccc829c15a06befc4c4c45d2714b4f1d578af7cd8d",
+    "published_at": "2025-01-02",
+    "available_at": "2025-01-02",
+    "fiscal_period": null,
+    "period_end": "2025-01-02",
+    "language": "en"
+  }
+}

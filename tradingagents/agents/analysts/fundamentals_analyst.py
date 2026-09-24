@@ -10,7 +10,7 @@ from tradingagents.agents.utils.agent_utils import (
 )
 
 
-def create_fundamentals_analyst(llm):
+def create_fundamentals_analyst(llm, financial_search_tool=None):
     def fundamentals_analyst_node(state):
         current_date = state["trade_date"]
         instrument_context = get_instrument_context_from_state(state)
@@ -21,11 +21,19 @@ def create_fundamentals_analyst(llm):
             get_cashflow,
             get_income_statement,
         ]
+        if financial_search_tool is not None:
+            tools.append(financial_search_tool)
 
         system_message = (
-            "你是一名基本面研究员，负责分析公司截至当前日期的基本面信息。请综合研究财务文件、公司概况、核心财务数据和历史财务表现，写一份完整报告，为交易员提供决策依据。尽可能提供充分细节，并用具体证据给出可执行的交易洞察。"
+            "你是一名基本面研究员，负责分析公司截至当前日期的基本面信息。请综合研究财务文件、公司概况、核心财务数据和历史财务表现，写一份简洁但可执行的报告，为交易员提供决策依据。控制在 800 到 1200 字以内，只保留有证据支持的关键结论。"
             + "请在报告末尾附上一张 Markdown 表格，整理关键结论，确保清晰易读。"
             + "可使用以下工具：`get_fundamentals` 获取综合公司分析，`get_balance_sheet` 获取资产负债表，`get_cashflow` 获取现金流量表，`get_income_statement` 获取利润表。"
+            + (
+                "可使用 `search_financial_documents` 查询财报、公告和管理层表述；"
+                "涉及风险、原因、展望等定性问题时优先使用它。"
+                if financial_search_tool is not None
+                else ""
+            )
             + get_language_instruction(),
         )
 

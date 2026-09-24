@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "nvda-2026q1-10q",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000116/nvda-20250427.htm",
+  "source_hash": "3abdb609a4c2799a59d9a04d550cb6d4a874e69b6d76c29b22f406691fbe3974",
+  "content_type": "text/html",
+  "byte_count": 1132663,
+  "fetched_at": "2026-09-22T05:17:07.113270+00:00",
+  "metadata": {
+    "document_id": "nvda-2026q1-10q",
+    "ticker": "NVDA",
+    "document_type": "quarterly_report",
+    "title": "NVIDIA Corporation 2026 Q1 Form 10-Q",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000116/nvda-20250427.htm",
+    "source_hash": "3abdb609a4c2799a59d9a04d550cb6d4a874e69b6d76c29b22f406691fbe3974",
+    "published_at": "2025-05-29",
+    "available_at": "2025-05-29",
+    "fiscal_period": "2026-Q1",
+    "period_end": "2025-04-27",
+    "language": "en"
+  }
+}

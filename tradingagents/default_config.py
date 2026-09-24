@@ -19,6 +19,7 @@ _ENV_OVERRIDES = {
     "TRADINGAGENTS_BENCHMARK_TICKER":     "benchmark_ticker",
     "TRADINGAGENTS_TEMPERATURE":          "temperature",
     "TRADINGAGENTS_LLM_MAX_RETRIES":      "llm_max_retries",
+    "TRADINGAGENTS_LLM_MAX_TOKENS":       "llm_max_tokens",
     # Provider-specific reasoning/thinking knobs (None = each provider's own
     # default). Settable here for non-interactive runs; the CLI also offers an
     # interactive choice, which is skipped when the matching var is set.
@@ -62,7 +63,11 @@ def _apply_env_overrides(config: dict) -> dict:
         if raw is None or raw == "":
             continue
         try:
-            config[key] = _coerce(raw, config.get(key))
+            # ``llm_max_tokens`` 默认允许为 None，因此不能仅靠默认值推断类型。
+            if key == "llm_max_tokens":
+                config[key] = int(raw)
+            else:
+                config[key] = _coerce(raw, config.get(key))
         except ValueError as exc:
             raise ValueError(f"Invalid value for {env_var}: {exc}") from exc
     return config
@@ -80,7 +85,7 @@ DEFAULT_CONFIG = _apply_env_overrides({
     # LLM settings
     "llm_provider": "openai",
     "deep_think_llm": "gpt-5.5",
-    "quick_think_llm": "gpt-5.4-mini",
+    "quick_think_llm": "gpt-5.5",
     # When None, each provider's client falls back to its own default endpoint
     # (api.openai.com for OpenAI, generativelanguage.googleapis.com for Gemini, ...).
     # The CLI overrides this per provider when the user picks one. Keeping a
@@ -100,6 +105,9 @@ DEFAULT_CONFIG = _apply_env_overrides({
     # provider/SDK at its own default (usually 2). Raise it to ride out bursty
     # 429 throttling on rate-limited deployments instead of aborting a run (#1091).
     "llm_max_retries": None,
+    # Optional response cap. None preserves provider defaults; the real-run
+    # observer sets a smaller value to keep low-cost measurement bounded.
+    "llm_max_tokens": None,
     # Checkpoint/resume: when True, LangGraph saves state after each node
     # so a crashed run can resume from the last successful step.
     "checkpoint_enabled": False,

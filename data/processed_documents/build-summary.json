@@ -1,0 +1,47 @@
+[
+  {
+    "document_id": "sec-amzn-10-k-2026-02-06-000101872426000004",
+    "ticker": "AMZN",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231.htm",
+    "source_hash": "baf4384bc3bb5906d547ef416f4d91010664f5283bba10dbadcabdf121c0496d",
+    "raw_bytes": 1968818,
+    "parsed_blocks": 854,
+    "heading_blocks": 192,
+    "table_blocks": 90,
+    "chunk_count": 308,
+    "min_chunk_tokens": 1,
+    "max_chunk_tokens": 680,
+    "average_chunk_tokens": 175.67207792207793,
+    "chunks_path": "data/processed_documents/sec-amzn-10-k-2026-02-06-000101872426000004.chunks.jsonl"
+  },
+  {
+    "document_id": "sec-amzn-10-q-2026-07-31-000101872426000026",
+    "ticker": "AMZN",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm",
+    "source_hash": "78ab91bb93f182f6c7b3115f59efe123ceb1a41868c578b5443a1ab831a70d3c",
+    "raw_bytes": 1591898,
+    "parsed_blocks": 534,
+    "heading_blocks": 110,
+    "table_blocks": 52,
+    "chunk_count": 178,
+    "min_chunk_tokens": 1,
+    "max_chunk_tokens": 694,
+    "average_chunk_tokens": 216.76966292134833,
+    "chunks_path": "data/processed_documents/sec-amzn-10-q-2026-07-31-000101872426000026.chunks.jsonl"
+  },
+  {
+    "document_id": "sec-amzn-8-k-2026-09-14-000110465926107526",
+    "ticker": "AMZN",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000110465926107526/tm2624614d5_8k.htm",
+    "source_hash": "5138bbb1af45b13c214e7a7111fe96b3b1e315720741c8b8e7c2355b036c1493",
+    "raw_bytes": 60338,
+    "parsed_blocks": 35,
+    "heading_blocks": 0,
+    "table_blocks": 9,
+    "chunk_count": 17,
+    "min_chunk_tokens": 5,
+    "max_chunk_tokens": 491,
+    "average_chunk_tokens": 81.88235294117646,
+    "chunks_path": "data/processed_documents/sec-amzn-8-k-2026-09-14-000110465926107526.chunks.jsonl"
+  }
+]

@@ -32,6 +32,11 @@ from tradingagents.dataflows.config import set_config
 from tradingagents.dataflows.utils import safe_ticker_component
 from tradingagents.default_config import DEFAULT_CONFIG
 from tradingagents.llm_clients import create_llm_client
+from tradingagents.rag.agent_search import (
+    FinancialSearchService,
+    create_search_financial_documents_tool,
+)
+from tradingagents.rag.postgres_agent_search import create_postgres_rag_search
 from tradingagents.reporting import write_report_tree
 
 from .checkpointer import checkpoint_step, clear_checkpoint, get_checkpointer, thread_id
@@ -62,6 +67,19 @@ def _coerce_max_retries(value):
     return n
 
 
+def _env_flag(name: str, default: bool = False) -> bool:
+    """把环境变量解析为严格的布尔开关，避免字符串真值误判。"""
+    value = os.getenv(name)
+    if value is None:
+        return default
+    normalized = value.strip().lower()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    raise ValueError(f"{name} must be a boolean value, got {value!r}")
+
+
 class TradingAgentsGraph:
     """Main class that orchestrates the trading agents framework."""
 
@@ -71,6 +89,7 @@ class TradingAgentsGraph:
         debug=False,
         config: dict[str, Any] = None,
         callbacks: list | None = None,
+        financial_search_service: FinancialSearchService | None = None,
     ):
         """Initialize the trading agents graph and components.
 
@@ -83,6 +102,21 @@ class TradingAgentsGraph:
         self.debug = debug
         self.config = config or DEFAULT_CONFIG
         self.callbacks = callbacks or []
+        if financial_search_service is not None:
+            # 测试、服务化入口或上层应用可以显式注入自己的搜索实现。
+            self.financial_search_service = financial_search_service
+        else:
+            rag_search = None
+            if _env_flag("TRADINGAGENTS_ENABLE_POSTGRES_RAG"):
+                # 只有显式开启时才创建数据库和 Embedding 客户端，保持旧模式启动行为。
+                rag_search = create_postgres_rag_search()
+            self.financial_search_service = FinancialSearchService(
+                # 数值问题继续走原有结构化 API；定性问题在开启开关后走真实 RAG。
+                api_search=lambda ticker, curr_date: get_fundamentals.invoke(
+                    {"ticker": ticker, "curr_date": curr_date}
+                ),
+                rag_search=rag_search,
+            )
 
         # Update the interface's config
         set_config(self.config)
@@ -129,6 +163,7 @@ class TradingAgentsGraph:
             self.deep_thinking_llm,
             self.tool_nodes,
             self.conditional_logic,
+            self.financial_search_tool,
         )
 
         self.propagator = Propagator(
@@ -183,10 +218,33 @@ class TradingAgentsGraph:
         if max_retries is not None and max_retries != "":
             kwargs["max_retries"] = _coerce_max_retries(max_retries)
 
+        max_tokens = self.config.get("llm_max_tokens")
+        if max_tokens is not None and max_tokens != "":
+            max_tokens = int(max_tokens)
+            if max_tokens <= 0:
+                raise ValueError("llm_max_tokens must be greater than 0")
+            kwargs["max_tokens"] = max_tokens
+
         return kwargs
 
     def _create_tool_nodes(self) -> dict[str, ToolNode]:
         """Create tool nodes for different data sources using abstract methods."""
+        # 兼容旧的无实例测试调用：market ToolNode 不依赖 RAG 服务，
+        # 只有真实图实例才创建基本面文档搜索工具。
+        financial_search_tool = None
+        if self is not None:
+            financial_search_tool = create_search_financial_documents_tool(
+                self.financial_search_service
+            )
+            self.financial_search_tool = financial_search_tool
+        fundamentals_tools = [
+            get_fundamentals,
+            get_balance_sheet,
+            get_cashflow,
+            get_income_statement,
+        ]
+        if financial_search_tool is not None:
+            fundamentals_tools.append(financial_search_tool)
         return {
             "market": ToolNode(
                 [
@@ -217,13 +275,7 @@ class TradingAgentsGraph:
                 ]
             ),
             "fundamentals": ToolNode(
-                [
-                    # Fundamental analysis tools
-                    get_fundamentals,
-                    get_balance_sheet,
-                    get_cashflow,
-                    get_income_statement,
-                ]
+                fundamentals_tools
             ),
         }
 
@@ -429,7 +481,9 @@ class TradingAgentsGraph:
             past_context=past_context,
             instrument_context=instrument_context,
         )
-        args = self.propagator.get_graph_args()
+        # 同一份回调同时传给 LLM 和 LangGraph 运行时，才能统计 ToolNode
+        # 的 on_tool_start；此前只传给 LLM，所以真实执行过工具但 tool_calls 显示为 0。
+        args = self.propagator.get_graph_args(callbacks=self.callbacks)
 
         # Inject thread_id so same ticker+date+graph-shape resumes; a different
         # date or graph shape starts fresh (#1089).

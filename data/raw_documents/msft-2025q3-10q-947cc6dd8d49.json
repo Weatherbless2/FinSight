@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "msft-2025q3-10q",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025061046/msft-20250331.htm",
+  "source_hash": "947cc6dd8d4929a4966b7d1475a4850fd2e8bb21e286087031cfb5ad9b029237",
+  "content_type": "text/html",
+  "byte_count": 6995916,
+  "fetched_at": "2026-09-22T05:17:00.896568+00:00",
+  "metadata": {
+    "document_id": "msft-2025q3-10q",
+    "ticker": "MSFT",
+    "document_type": "quarterly_report",
+    "title": "Microsoft Corporation 2025 Q3 Form 10-Q",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025061046/msft-20250331.htm",
+    "source_hash": "947cc6dd8d4929a4966b7d1475a4850fd2e8bb21e286087031cfb5ad9b029237",
+    "published_at": "2025-04-30",
+    "available_at": "2025-04-30",
+    "fiscal_period": "2025-Q3",
+    "period_end": "2025-03-31",
+    "language": "en"
+  }
+}

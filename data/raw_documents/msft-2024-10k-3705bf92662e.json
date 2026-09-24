@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "msft-2024-10k",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
+  "source_hash": "3705bf92662eaea9a707efa5ef8ce6bc059227f0316c62bce25f980a85257ca8",
+  "content_type": "text/html",
+  "byte_count": 6861385,
+  "fetched_at": "2026-09-22T05:16:52.043536+00:00",
+  "metadata": {
+    "document_id": "msft-2024-10k",
+    "ticker": "MSFT",
+    "document_type": "annual_report",
+    "title": "Microsoft Corporation 2024 Form 10-K",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
+    "source_hash": "3705bf92662eaea9a707efa5ef8ce6bc059227f0316c62bce25f980a85257ca8",
+    "published_at": "2024-07-30",
+    "available_at": "2024-07-30",
+    "fiscal_period": "2024",
+    "period_end": "2024-06-30",
+    "language": "en"
+  }
+}

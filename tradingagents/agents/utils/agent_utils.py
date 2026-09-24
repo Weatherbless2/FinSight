@@ -49,6 +49,22 @@ __all__ = [
 logger = logging.getLogger(__name__)
 
 
+def compact_for_prompt(value: Any, max_chars: int = 2800) -> str:
+    """限制下游 Agent 看到的上游文本长度，同时保留首尾信息。
+
+    多个分析师报告会在研究员和风险节点汇合。如果把每份完整报告再次
+    拼进 Prompt，上游报告越长，网关推理时间和超时概率越高。首尾通常包含
+    结论、关键数据和风险提示，因此保留两端比简单截断更适合投研报告。
+    """
+    text = str(value or "")
+    if len(text) <= max_chars:
+        return text
+    head = max_chars * 2 // 3
+    tail = max_chars - head
+    omitted = len(text) - head - tail
+    return f"{text[:head]}\n...[已省略中间 {omitted} 个字符]...\n{text[-tail:]}"
+
+
 def get_language_instruction() -> str:
     """Return a prompt instruction for the configured output language.
 

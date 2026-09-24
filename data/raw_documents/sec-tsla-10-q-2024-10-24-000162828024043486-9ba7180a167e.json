@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "sec-tsla-10-q-2024-10-24-000162828024043486",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024043486/tsla-20240930.htm",
+  "source_hash": "9ba7180a167ed58c6b31fae15b80b75f838f97950b83c54ca1afddcfb84b4844",
+  "content_type": "text/html",
+  "byte_count": 1502782,
+  "fetched_at": "2026-09-24T03:13:28.691032+00:00",
+  "metadata": {
+    "document_id": "sec-tsla-10-q-2024-10-24-000162828024043486",
+    "ticker": "TSLA",
+    "document_type": "quarterly_report",
+    "title": "Tesla, Inc. 10-Q filing",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024043486/tsla-20240930.htm",
+    "source_hash": "9ba7180a167ed58c6b31fae15b80b75f838f97950b83c54ca1afddcfb84b4844",
+    "published_at": "2024-10-24",
+    "available_at": "2024-10-24",
+    "fiscal_period": null,
+    "period_end": "2024-09-30",
+    "language": "en"
+  }
+}

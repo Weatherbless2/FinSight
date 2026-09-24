@@ -54,7 +54,12 @@ def fetch_stocktwits_messages(ticker: str, limit: int = 30, timeout: float = 10.
     except (OSError, http.client.HTTPException, json.JSONDecodeError) as exc:
         # OSError covers URLError/TimeoutError/connection resets; HTTPException
         # covers chunked-transfer errors (IncompleteRead/BadStatusLine, #1024).
-        logger.warning("StockTwits fetch failed for %s: %s", ticker, exc)
+        logger.warning(
+            "[数据源降级] StockTwits 获取失败：ticker=%s，原因=%s；"
+            "本数据源返回 unavailable，占用的分析流程继续。",
+            ticker,
+            exc,
+        )
         return f"<stocktwits unavailable: {type(exc).__name__}>"
 
     messages = data.get("messages", []) if isinstance(data, dict) else []

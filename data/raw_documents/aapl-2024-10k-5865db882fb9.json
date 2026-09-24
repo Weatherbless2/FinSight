@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "aapl-2024-10k",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000123/aapl-20240928.htm",
+  "source_hash": "5865db882fb980f088e96f3374f61137dcba177fe531b6ff59c85df54edf5474",
+  "content_type": "text/html",
+  "byte_count": 1504254,
+  "fetched_at": "2026-09-22T05:16:44.236154+00:00",
+  "metadata": {
+    "document_id": "aapl-2024-10k",
+    "ticker": "AAPL",
+    "document_type": "annual_report",
+    "title": "Apple Inc. 2024 Form 10-K",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000123/aapl-20240928.htm",
+    "source_hash": "5865db882fb980f088e96f3374f61137dcba177fe531b6ff59c85df54edf5474",
+    "published_at": "2024-11-01",
+    "available_at": "2024-11-01",
+    "fiscal_period": "2024",
+    "period_end": "2024-09-28",
+    "language": "en"
+  }
+}

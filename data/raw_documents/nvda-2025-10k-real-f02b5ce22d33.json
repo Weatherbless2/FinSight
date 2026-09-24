@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "nvda-2025-10k-real",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000023/nvda-20250126.htm",
+  "source_hash": "f02b5ce22d33b5783154bf5bf7df9a087cb10f1847e112d175f52e3ec2959cfb",
+  "content_type": "text/html",
+  "byte_count": 2067884,
+  "fetched_at": "2026-09-18T07:17:10.990386+00:00",
+  "metadata": {
+    "document_id": "nvda-2025-10k-real",
+    "ticker": "NVDA",
+    "document_type": "annual_report",
+    "title": "NVIDIA Corporation 2025 Form 10-K",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000023/nvda-20250126.htm",
+    "source_hash": "f02b5ce22d33b5783154bf5bf7df9a087cb10f1847e112d175f52e3ec2959cfb",
+    "published_at": "2025-02-26",
+    "available_at": "2025-02-26",
+    "fiscal_period": "FY2025",
+    "period_end": "2025-01-26",
+    "language": "en"
+  }
+}

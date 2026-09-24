@@ -1,4 +1,28 @@
 services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    profiles:
+      - rag
+    environment:
+      # 默认值仅用于本地学习；部署环境必须通过 .env 或 Secret 注入密码。
+      POSTGRES_DB: ${POSTGRES_DB:-tradingagents}
+      POSTGRES_USER: ${POSTGRES_USER:-tradingagents}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tradingagents_dev_only}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - tradingagents_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      # pg_isready 只判断数据库是否接受连接，不会修改业务数据。
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-tradingagents} -d ${POSTGRES_DB:-tradingagents}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   tradingagents:
     build: .
     env_file:
@@ -31,6 +55,23 @@ services:
     profiles:
       - ollama
 
+  redis:
+    image: redis:7-alpine
+    profiles:
+      - rag
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - tradingagents_redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
 volumes:
+  tradingagents_postgres_data:
   tradingagents_data:
   ollama_data:
+  tradingagents_redis_data:

@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "msft-2025-10k-real",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025100235/msft-20250630.htm",
+  "source_hash": "0d0a5feed3d49ab013390e08e524a547739df9bb32af0b430b7a067e58947a38",
+  "content_type": "text/html",
+  "byte_count": 8158431,
+  "fetched_at": "2026-09-18T07:17:10.164326+00:00",
+  "metadata": {
+    "document_id": "msft-2025-10k-real",
+    "ticker": "MSFT",
+    "document_type": "annual_report",
+    "title": "Microsoft Corporation 2025 Form 10-K",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025100235/msft-20250630.htm",
+    "source_hash": "0d0a5feed3d49ab013390e08e524a547739df9bb32af0b430b7a067e58947a38",
+    "published_at": "2025-07-30",
+    "available_at": "2025-07-30",
+    "fiscal_period": "FY2025",
+    "period_end": "2025-06-30",
+    "language": "en"
+  }
+}

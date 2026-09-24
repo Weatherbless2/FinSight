@@ -51,12 +51,14 @@ class GraphSetup:
         deep_thinking_llm: Any,
         tool_nodes: dict[str, ToolNode],
         conditional_logic: ConditionalLogic,
+        financial_search_tool: Any = None,
     ):
         """Initialize with required components."""
         self.quick_thinking_llm = quick_thinking_llm
         self.deep_thinking_llm = deep_thinking_llm
         self.tool_nodes = tool_nodes
         self.conditional_logic = conditional_logic
+        self.financial_search_tool = financial_search_tool
 
     def setup_graph(
         self, selected_analysts=("market", "social", "news", "fundamentals")
@@ -76,7 +78,10 @@ class GraphSetup:
             "market": lambda: create_market_analyst(self.quick_thinking_llm),
             "social": lambda: create_sentiment_analyst(self.quick_thinking_llm),
             "news": lambda: create_news_analyst(self.quick_thinking_llm),
-            "fundamentals": lambda: create_fundamentals_analyst(self.quick_thinking_llm),
+            "fundamentals": lambda: create_fundamentals_analyst(
+                self.quick_thinking_llm,
+                self.financial_search_tool,
+            ),
         }
 
         # Create researcher and manager nodes
@@ -131,6 +136,11 @@ class GraphSetup:
             # Connect to next analyst or to Bull Researcher if this is the last analyst
             if i < len(plan.specs) - 1:
                 workflow.add_edge(current_clear, plan.specs[i + 1].agent_node)
+            elif self.conditional_logic.max_debate_rounds <= 0:
+                # 低成本观测模式明确关闭研究辩论时，直接进入研究经理。
+                # 旧逻辑仍会无条件执行一次 Bull Researcher，导致“0 轮”
+                # 实际仍产生一次高耗时模型调用。
+                workflow.add_edge(current_clear, "Research Manager")
             else:
                 workflow.add_edge(current_clear, "Bull Researcher")
 
@@ -142,7 +152,11 @@ class GraphSetup:
                 DEBATE_PATH_MAP,
             )
         workflow.add_edge("Research Manager", "Trader")
-        workflow.add_edge("Trader", "Aggressive Analyst")
+        if self.conditional_logic.max_risk_discuss_rounds <= 0:
+            # 与研究辩论保持一致：关闭风险辩论时跳过一次激进分析师。
+            workflow.add_edge("Trader", "Portfolio Manager")
+        else:
+            workflow.add_edge("Trader", "Aggressive Analyst")
         # All three risk edges share the complete RISK_ANALYSIS_PATH_MAP (#1088).
         for risk_node in ("Aggressive Analyst", "Conservative Analyst", "Neutral Analyst"):
             workflow.add_conditional_edges(

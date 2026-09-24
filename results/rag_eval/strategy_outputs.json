@@ -1,0 +1,1717 @@
+{
+  "metadata": {
+    "source": "PostgreSQL + pgvector + Ollama",
+    "fixture": "tests/fixtures/rag_eval_cases.json",
+    "case_count": 30,
+    "embedding_model": "nomic-embed-text",
+    "embedding_dimensions": 1536
+  },
+  "strategies": {
+    "keyword": {
+      "aapl-fact-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "elapsed_ms": 11.378,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-fact-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "elapsed_ms": 2.411,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-compare-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "elapsed_ms": 2.62,
+        "input_tokens": 27,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-compare-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "elapsed_ms": 2.698,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-reason-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "elapsed_ms": 2.486,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-reason-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 4.078,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-time-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 2.998,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-time-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 2.211,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-none-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 2.222,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-none-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 2.975,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-fact-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "elapsed_ms": 24.958,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-fact-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "elapsed_ms": 4.261,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-compare-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "elapsed_ms": 5.729,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-compare-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "elapsed_ms": 5.743,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-reason-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "elapsed_ms": 5.253,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-reason-02": {
+        "retrieved_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "cited_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "elapsed_ms": 3.733,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-time-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 3.976,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-time-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 4.307,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-none-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 3.433,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-none-02": {
+        "retrieved_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 2.886,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-fact-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 3.077,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-fact-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "elapsed_ms": 1.495,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-compare-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "elapsed_ms": 2.195,
+        "input_tokens": 29,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-compare-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "elapsed_ms": 1.932,
+        "input_tokens": 27,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-reason-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 1.563,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-reason-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "elapsed_ms": 1.636,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-time-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 2.056,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-time-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 2.292,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-none-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 1.624,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-none-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 1.619,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      }
+    },
+    "vector": {
+      "aapl-fact-01": {
+        "retrieved_document_ids": [
+          "aapl-2025q1-10q",
+          "aapl-2024-10k",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2025q1-10q",
+          "aapl-2024-10k",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 848.326,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-fact-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 41.948,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-compare-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 43.441,
+        "input_tokens": 27,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-compare-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 40.437,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-reason-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 35.749,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-reason-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 39.025,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-time-01": {
+        "retrieved_document_ids": [
+          "aapl-2025q1-10q",
+          "aapl-2024-10k",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 42.789,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-time-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 42.74,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-none-01": {
+        "retrieved_document_ids": [
+          "aapl-2025q1-10q",
+          "aapl-2024-10k"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 35.511,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-none-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 38.706,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-fact-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "elapsed_ms": 57.73,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-fact-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "elapsed_ms": 41.049,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-compare-01": {
+        "retrieved_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "cited_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "elapsed_ms": 39.035,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-compare-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-release",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-release",
+          "msft-2025q2-10q"
+        ],
+        "elapsed_ms": 44.192,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-reason-01": {
+        "retrieved_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k",
+          "msft-2025q2-release"
+        ],
+        "cited_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k",
+          "msft-2025q2-release"
+        ],
+        "elapsed_ms": 37.479,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-reason-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "elapsed_ms": 39.371,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-time-01": {
+        "retrieved_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k",
+          "msft-2025q2-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 43.618,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-time-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-release",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 60.547,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-none-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 45.144,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-none-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 49.362,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-fact-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "elapsed_ms": 43.361,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-fact-02": {
+        "retrieved_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 37.271,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-compare-01": {
+        "retrieved_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 41.35,
+        "input_tokens": 29,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-compare-02": {
+        "retrieved_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 46.463,
+        "input_tokens": 27,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-reason-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "elapsed_ms": 33.236,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-reason-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "elapsed_ms": 38.258,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-time-01": {
+        "retrieved_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 41.061,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-time-02": {
+        "retrieved_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 40.468,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-none-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 36.378,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-none-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 51.896,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      }
+    },
+    "hybrid": {
+      "aapl-fact-01": {
+        "retrieved_document_ids": [
+          "aapl-2025q1-10q",
+          "aapl-2024-10k"
+        ],
+        "cited_document_ids": [
+          "aapl-2025q1-10q",
+          "aapl-2024-10k"
+        ],
+        "elapsed_ms": 50.768,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-fact-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 43.286,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-compare-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "elapsed_ms": 40.322,
+        "input_tokens": 27,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-compare-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 40.892,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-reason-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 39.945,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-reason-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 41.075,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-time-01": {
+        "retrieved_document_ids": [
+          "aapl-2025q1-10q",
+          "aapl-2024-10k",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 46.128,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-time-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 45.492,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-none-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 39.711,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-none-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 43.998,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-fact-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "elapsed_ms": 69.541,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-fact-02": {
+        "retrieved_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k",
+          "msft-2025q2-release"
+        ],
+        "cited_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k",
+          "msft-2025q2-release"
+        ],
+        "elapsed_ms": 46.004,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-compare-01": {
+        "retrieved_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "cited_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "elapsed_ms": 49.009,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-compare-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "elapsed_ms": 45.183,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-reason-01": {
+        "retrieved_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "cited_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "elapsed_ms": 43.381,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-reason-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "elapsed_ms": 42.075,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-time-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 45.674,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-time-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 48.444,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-none-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 40.763,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-none-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 42.214,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-fact-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 47.118,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-fact-02": {
+        "retrieved_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 50.153,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-compare-01": {
+        "retrieved_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 52.143,
+        "input_tokens": 29,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-compare-02": {
+        "retrieved_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 45.092,
+        "input_tokens": 27,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-reason-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "elapsed_ms": 39.501,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-reason-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "elapsed_ms": 44.342,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-time-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 41.07,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-time-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 49.124,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-none-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 34.99,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-none-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 39.135,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      }
+    },
+    "agentic": {
+      "aapl-fact-01": {
+        "retrieved_document_ids": [
+          "aapl-2025q1-10q",
+          "aapl-2024-10k"
+        ],
+        "cited_document_ids": [
+          "aapl-2025q1-10q",
+          "aapl-2024-10k"
+        ],
+        "elapsed_ms": 49.483,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-fact-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "elapsed_ms": 42.642,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-compare-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "elapsed_ms": 55.374,
+        "input_tokens": 27,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-compare-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 50.607,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-reason-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "elapsed_ms": 44.827,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-reason-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "elapsed_ms": 42.976,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-time-01": {
+        "retrieved_document_ids": [
+          "aapl-2025q1-10q",
+          "aapl-2024-10k"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 45.558,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-time-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 50.709,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-none-01": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 44.963,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "aapl-none-02": {
+        "retrieved_document_ids": [
+          "aapl-2024-10k",
+          "aapl-2025q1-10q",
+          "aapl-2025q1-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 43.963,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-fact-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "elapsed_ms": 57.004,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-fact-02": {
+        "retrieved_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "cited_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "elapsed_ms": 46.769,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-compare-01": {
+        "retrieved_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "cited_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "elapsed_ms": 49.206,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-compare-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "elapsed_ms": 56.946,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-reason-01": {
+        "retrieved_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "cited_document_ids": [
+          "msft-2025q2-10q",
+          "msft-2024-10k"
+        ],
+        "elapsed_ms": 44.873,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-reason-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "elapsed_ms": 45.386,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-time-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 46.462,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-time-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q",
+          "msft-2025q2-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 51.349,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-none-01": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 39.127,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "msft-none-02": {
+        "retrieved_document_ids": [
+          "msft-2024-10k",
+          "msft-2025q2-10q"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 45.125,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-fact-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 48.001,
+        "input_tokens": 33,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-fact-02": {
+        "retrieved_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 44.409,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-compare-01": {
+        "retrieved_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 45.06,
+        "input_tokens": 29,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-compare-02": {
+        "retrieved_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [
+          "nvda-2025q4-release",
+          "nvda-2025-10k"
+        ],
+        "elapsed_ms": 48.591,
+        "input_tokens": 27,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-reason-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "elapsed_ms": 48.127,
+        "input_tokens": 16,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-reason-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "elapsed_ms": 42.719,
+        "input_tokens": 23,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-time-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 46.18,
+        "input_tokens": 24,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-time-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 45.755,
+        "input_tokens": 28,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-none-01": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 36.514,
+        "input_tokens": 13,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      },
+      "nvda-none-02": {
+        "retrieved_document_ids": [
+          "nvda-2025-10k",
+          "nvda-2025q4-release"
+        ],
+        "cited_document_ids": [],
+        "elapsed_ms": 42.453,
+        "input_tokens": 22,
+        "output_tokens": 0,
+        "total_claims": 0,
+        "unsupported_claims": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "msft-2025q2-release",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025010484/msft-20250129.htm",
+  "source_hash": "f57b408e66b1d73f8ff9e79aa52295fec5f6ccc500e3e207ba8fcfd4a380d585",
+  "content_type": "text/html",
+  "byte_count": 60171,
+  "fetched_at": "2026-09-22T05:16:57.855230+00:00",
+  "metadata": {
+    "document_id": "msft-2025q2-release",
+    "ticker": "MSFT",
+    "document_type": "earnings_release",
+    "title": "Microsoft Corporation 2025 Q2 Earnings Release",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025010484/msft-20250129.htm",
+    "source_hash": "f57b408e66b1d73f8ff9e79aa52295fec5f6ccc500e3e207ba8fcfd4a380d585",
+    "published_at": "2025-01-29",
+    "available_at": "2025-01-29",
+    "fiscal_period": "2025-Q2",
+    "period_end": null,
+    "language": "en"
+  }
+}

@@ -1,4 +1,5 @@
 from tradingagents.agents.utils.agent_utils import (
+    compact_for_prompt,
     get_instrument_context_from_state,
     get_language_instruction,
 )
@@ -11,10 +12,10 @@ def create_bull_researcher(llm):
         bull_history = investment_debate_state.get("bull_history", "")
 
         current_response = investment_debate_state.get("current_response", "")
-        market_research_report = state["market_report"]
-        sentiment_report = state["sentiment_report"]
-        news_report = state["news_report"]
-        fundamentals_report = state["fundamentals_report"]
+        market_research_report = compact_for_prompt(state["market_report"], max_chars=600)
+        sentiment_report = compact_for_prompt(state["sentiment_report"], max_chars=600)
+        news_report = compact_for_prompt(state["news_report"], max_chars=600)
+        fundamentals_report = compact_for_prompt(state["fundamentals_report"], max_chars=600)
         instrument_context = get_instrument_context_from_state(state)
         asset_type = state.get("asset_type", "stock")
         target_label = "stock" if asset_type == "stock" else "asset"

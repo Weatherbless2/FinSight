@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "aapl-2025q2-10q",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000057/aapl-20250329.htm",
+  "source_hash": "e9e87b2e15c2568549ba4db254cb353c1c554172966fc2edbf8277da81e86c0c",
+  "content_type": "text/html",
+  "byte_count": 890451,
+  "fetched_at": "2026-09-22T05:16:48.173382+00:00",
+  "metadata": {
+    "document_id": "aapl-2025q2-10q",
+    "ticker": "AAPL",
+    "document_type": "quarterly_report",
+    "title": "Apple Inc. 2025 Q2 Form 10-Q",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000057/aapl-20250329.htm",
+    "source_hash": "e9e87b2e15c2568549ba4db254cb353c1c554172966fc2edbf8277da81e86c0c",
+    "published_at": "2025-05-02",
+    "available_at": "2025-05-02",
+    "fiscal_period": "2025-Q2",
+    "period_end": "2025-03-29",
+    "language": "en"
+  }
+}
