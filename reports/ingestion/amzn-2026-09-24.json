@@ -1,0 +1,14 @@
+{
+  "ticker": "AMZN",
+  "as_of": "2026-09-24",
+  "candidates": 3,
+  "downloaded": 3,
+  "skipped_existing": 0,
+  "filtered_future": 0,
+  "download_failed": 0,
+  "chunk_documents": 3,
+  "documents_inserted": 3,
+  "chunks_inserted": 503,
+  "chunks_skipped": 2524,
+  "embedding_rows_written": 503
+}

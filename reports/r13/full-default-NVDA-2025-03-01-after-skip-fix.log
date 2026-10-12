@@ -1,0 +1,218 @@
+[观测说明] 本次是真实 LLM + LangGraph 运行；数据工具使用本地 fixture，不访问 StockTwits/Reddit 外部接口，外部行情波动不会影响主链路计时。Ctrl+C 才是终止，Ctrl+Z 会挂起进程。
+[运行参数] ticker=NVDA | trade_date=2025-03-01 | runs=1 | deep_model=gpt-5.5 | quick_model=gpt-5.5 | max_retries=0 | analysts=market,social,news,fundamentals
+[运行开始] ticker=NVDA | trade_date=2025-03-01 | 正在启动 LangGraph 固定工作流
+[步骤 01][开始] 市场分析师（Market Analyst） | 分析行情和技术指标，并判断是否需要调用市场工具
+[步骤 01][完成] 市场分析师（Market Analyst） | 耗时 6.8s | 当前累计步骤 1
+[步骤 02][开始] 市场工具节点（tools_market） | 获取行情、技术指标和经过校验的市场快照
+[步骤 02][完成] 市场工具节点（tools_market） | 耗时 0.0s | 当前累计步骤 2
+[步骤 03][开始] 市场分析师（Market Analyst） | 分析行情和技术指标，并判断是否需要调用市场工具
+[步骤 03][完成] 市场分析师（Market Analyst） | 耗时 18.2s | 当前累计步骤 3
+[步骤 04][开始] 市场工具节点（tools_market） | 获取行情、技术指标和经过校验的市场快照
+[步骤 04][完成] 市场工具节点（tools_market） | 耗时 0.0s | 当前累计步骤 4
+[步骤 05][开始] 市场分析师（Market Analyst） | 分析行情和技术指标，并判断是否需要调用市场工具
+[步骤 05][完成] 市场分析师（Market Analyst） | 耗时 2.7s | 当前累计步骤 5
+[步骤 06][开始] 市场工具节点（tools_market） | 获取行情、技术指标和经过校验的市场快照
+[步骤 06][完成] 市场工具节点（tools_market） | 耗时 0.0s | 当前累计步骤 6
+[步骤 07][开始] 市场分析师（Market Analyst） | 分析行情和技术指标，并判断是否需要调用市场工具
+[步骤 07][完成] 市场分析师（Market Analyst） | 耗时 111.1s | 当前累计步骤 7
+[步骤 08][开始] 清理市场上下文（Msg Clear Market） | 删除已消费的工具消息，准备进入下一个分析阶段
+[步骤 08][完成] 清理市场上下文（Msg Clear Market） | 耗时 0.0s | 当前累计步骤 8
+[步骤 09][开始] Sentiment Analyst（Sentiment Analyst） | 执行当前工作流节点
+Sentiment Analyst: structured-output invocation failed (Error code: 502 - {'error': {'message': 'The origin web server returned an invalid or incomplete response to Cloudflare. This typically indicates the origin is overloaded or misconfigured. (request id: 202609230450205889166558268d9d6QNqRaY6I)', 'type': 'bad_response_status_code', 'param': '', 'code': 'bad_response_status_code'}}); retrying once as free text
+[步骤 09][完成] Sentiment Analyst（Sentiment Analyst） | 耗时 105.8s | 当前累计步骤 9
+[步骤 10][开始] Msg Clear Sentiment（Msg Clear Sentiment） | 执行当前工作流节点
+[步骤 10][完成] Msg Clear Sentiment（Msg Clear Sentiment） | 耗时 0.0s | 当前累计步骤 10
+[步骤 11][开始] 新闻分析师（News Analyst） | 分析新闻、宏观因素和市场事件
+[步骤 11][完成] 新闻分析师（News Analyst） | 耗时 10.2s | 当前累计步骤 11
+[步骤 12][开始] 新闻工具节点（tools_news） | 获取新闻、宏观指标和相关市场信息
+[步骤 12][完成] 新闻工具节点（tools_news） | 耗时 0.0s | 当前累计步骤 12
+[步骤 13][开始] 新闻分析师（News Analyst） | 分析新闻、宏观因素和市场事件
+[步骤 13][完成] 新闻分析师（News Analyst） | 耗时 109.5s | 当前累计步骤 13
+[步骤 14][开始] 清理新闻上下文（Msg Clear News） | 删除已消费的新闻工具消息
+[步骤 14][完成] 清理新闻上下文（Msg Clear News） | 耗时 0.0s | 当前累计步骤 14
+[步骤 15][开始] 基本面分析师（Fundamentals Analyst） | 分析财报、结构化基本面数据和财报 RAG 证据
+[步骤 15][完成] 基本面分析师（Fundamentals Analyst） | 耗时 10.9s | 当前累计步骤 15
+[步骤 16][开始] 基本面工具节点（tools_fundamentals） | 获取财务数据或检索 PostgreSQL 财报 Chunk
+[RAG开始] ticker=NVDA | as_of=2025-03-01 | strategy=hybrid | top_k=2 | query=截至2025-03-01最新财报、公司概况、数据中心与AI需求、Blackwell产品进展、供应链、竞争、监管和管理层展望；请引用有证据的关键风险与催化剂
+[RAG完成] hits=2 | documents=1 | citations=2 | elapsed=625.745ms | future_safe=True
+[步骤 16][完成] 基本面工具节点（tools_fundamentals） | 耗时 0.6s | 当前累计步骤 16
+[步骤 17][开始] 基本面分析师（Fundamentals Analyst） | 分析财报、结构化基本面数据和财报 RAG 证据
+[步骤 17][完成] 基本面分析师（Fundamentals Analyst） | 耗时 77.7s | 当前累计步骤 17
+[步骤 18][开始] 清理基本面上下文（Msg Clear Fundamentals） | 删除已消费的基本面工具消息
+[步骤 18][完成] 清理基本面上下文（Msg Clear Fundamentals） | 耗时 0.0s | 当前累计步骤 18
+[步骤 19][开始] 研究经理（Research Manager） | 综合多空观点，形成研究结论
+[步骤 19][完成] 研究经理（Research Manager） | 耗时 12.5s | 当前累计步骤 19
+[步骤 20][开始] 交易员（Trader） | 根据研究结论生成模拟交易计划
+[步骤 20][完成] 交易员（Trader） | 耗时 9.7s | 当前累计步骤 20
+[步骤 21][开始] 组合经理（Portfolio Manager） | 汇总研究和风险意见，生成最终评级
+[步骤 21][完成] 组合经理（Portfolio Manager） | 耗时 18.4s | 当前累计步骤 21
+[运行完成] decision=Hold | 总耗时 496.6s | 步骤 21 | LLM 调用 13 | 工具调用 23
+{
+  "ticker": "NVDA",
+  "trade_date": "2025-03-01",
+  "decision": "Hold",
+  "total_seconds": 496.5757,
+  "steps": 21,
+  "node_summary": {
+    "Market Analyst": {
+      "count": 4,
+      "mean": 34.7138,
+      "median": 12.5251,
+      "p50": 12.5251,
+      "p95": 97.1797,
+      "p99": 108.3267,
+      "min": 2.6916,
+      "max": 111.1135
+    },
+    "tools_market": {
+      "count": 3,
+      "mean": 0.0026,
+      "median": 0.0014,
+      "p50": 0.0014,
+      "p95": 0.005,
+      "p99": 0.0053,
+      "min": 0.0009,
+      "max": 0.0054
+    },
+    "Msg Clear Market": {
+      "count": 1,
+      "mean": 0.0001,
+      "median": 0.0001,
+      "p50": 0.0001,
+      "p95": 0.0001,
+      "p99": 0.0001,
+      "min": 0.0001,
+      "max": 0.0001
+    },
+    "Sentiment Analyst": {
+      "count": 1,
+      "mean": 105.8184,
+      "median": 105.8184,
+      "p50": 105.8184,
+      "p95": 105.8184,
+      "p99": 105.8184,
+      "min": 105.8184,
+      "max": 105.8184
+    },
+    "Msg Clear Sentiment": {
+      "count": 1,
+      "mean": 0.0001,
+      "median": 0.0001,
+      "p50": 0.0001,
+      "p95": 0.0001,
+      "p99": 0.0001,
+      "min": 0.0001,
+      "max": 0.0001
+    },
+    "News Analyst": {
+      "count": 2,
+      "mean": 59.8803,
+      "median": 59.8803,
+      "p50": 59.8803,
+      "p95": 104.561,
+      "p99": 108.5326,
+      "min": 10.2351,
+      "max": 109.5256
+    },
+    "tools_news": {
+      "count": 1,
+      "mean": 0.0042,
+      "median": 0.0042,
+      "p50": 0.0042,
+      "p95": 0.0042,
+      "p99": 0.0042,
+      "min": 0.0042,
+      "max": 0.0042
+    },
+    "Msg Clear News": {
+      "count": 1,
+      "mean": 0.0001,
+      "median": 0.0001,
+      "p50": 0.0001,
+      "p95": 0.0001,
+      "p99": 0.0001,
+      "min": 0.0001,
+      "max": 0.0001
+    },
+    "Fundamentals Analyst": {
+      "count": 2,
+      "mean": 44.2914,
+      "median": 44.2914,
+      "p50": 44.2914,
+      "p95": 74.3791,
+      "p99": 77.0536,
+      "min": 10.8605,
+      "max": 77.7222
+    },
+    "tools_fundamentals": {
+      "count": 1,
+      "mean": 0.63,
+      "median": 0.63,
+      "p50": 0.63,
+      "p95": 0.63,
+      "p99": 0.63,
+      "min": 0.63,
+      "max": 0.63
+    },
+    "Msg Clear Fundamentals": {
+      "count": 1,
+      "mean": 0.0001,
+      "median": 0.0001,
+      "p50": 0.0001,
+      "p95": 0.0001,
+      "p99": 0.0001,
+      "min": 0.0001,
+      "max": 0.0001
+    },
+    "Research Manager": {
+      "count": 1,
+      "mean": 12.5476,
+      "median": 12.5476,
+      "p50": 12.5476,
+      "p95": 12.5476,
+      "p99": 12.5476,
+      "min": 12.5476,
+      "max": 12.5476
+    },
+    "Trader": {
+      "count": 1,
+      "mean": 9.6799,
+      "median": 9.6799,
+      "p50": 9.6799,
+      "p95": 9.6799,
+      "p99": 9.6799,
+      "min": 9.6799,
+      "max": 9.6799
+    },
+    "Portfolio Manager": {
+      "count": 1,
+      "mean": 18.3954,
+      "median": 18.3954,
+      "p50": 18.3954,
+      "p95": 18.3954,
+      "p99": 18.3954,
+      "min": 18.3954,
+      "max": 18.3954
+    }
+  },
+  "node_order": [
+    "Market Analyst",
+    "tools_market",
+    "Msg Clear Market",
+    "Sentiment Analyst",
+    "Msg Clear Sentiment",
+    "News Analyst",
+    "tools_news",
+    "Msg Clear News",
+    "Fundamentals Analyst",
+    "tools_fundamentals",
+    "Msg Clear Fundamentals",
+    "Research Manager",
+    "Trader",
+    "Portfolio Manager"
+  ],
+  "llm_calls": 13,
+  "tool_node_runs": 23,
+  "tokens_in": 18767,
+  "tokens_out": 8788
+}

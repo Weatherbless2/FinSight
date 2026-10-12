@@ -1,0 +1,12 @@
+usage: run_real_rag_eval.py [-h] [--fixture FIXTURE]
+                            [--database-url DATABASE_URL] [--output OUTPUT]
+                            [--candidate-k CANDIDATE_K]
+
+执行真实 PostgreSQL RAG 四策略评测
+
+options:
+  -h, --help            show this help message and exit
+  --fixture FIXTURE
+  --database-url DATABASE_URL
+  --output OUTPUT
+  --candidate-k CANDIDATE_K

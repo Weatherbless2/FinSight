@@ -1,0 +1,14 @@
+[观测说明] 本次是真实 LLM + LangGraph 运行；数据工具使用本地 fixture，不访问 StockTwits/Reddit 外部接口，外部行情波动不会影响主链路计时。Ctrl+C 才是终止，Ctrl+Z 会挂起进程。
+[运行参数] ticker=NVDA | trade_date=2025-03-01 | runs=1 | deep_model=gpt-5.5 | quick_model=gpt-5.5 | max_retries=0 | analysts=fundamentals
+[运行开始] ticker=NVDA | trade_date=2025-03-01 | 正在启动 LangGraph 固定工作流
+[步骤 01][开始] 基本面分析师（Fundamentals Analyst） | 分析财报、结构化基本面数据和财报 RAG 证据
+[步骤 01][完成] 基本面分析师（Fundamentals Analyst） | 耗时 22.0s | 当前累计步骤 1
+[步骤 02][开始] 基本面工具节点（tools_fundamentals） | 获取财务数据或检索 PostgreSQL 财报 Chunk
+[步骤 02][完成] 基本面工具节点（tools_fundamentals） | 耗时 0.7s | 当前累计步骤 2
+[步骤 03][开始] 基本面分析师（Fundamentals Analyst） | 分析财报、结构化基本面数据和财报 RAG 证据
+[步骤 03][完成] 基本面分析师（Fundamentals Analyst） | 耗时 124.8s | 当前累计步骤 3
+[运行失败] 当前节点可能是：Fundamentals Analyst
+[错误类型] OpenAIAPIError
+[错误信息] Error code: 524 - {'error': {'message': 'The origin web server did not return a complete response within the 120-second Proxy Read Timeout window. The connection was established, but the origin took too long to respond. (request id: 202609230339044377558258268d9d6ivhC5mkK)', 'type': 'bad_response_status_code', 'param': '', 'code': 'bad_response_status_code'}}
+[原因判断] 中转网关等待上游模型超过 120 秒；不是 PostgreSQL 或 RAG 查询错误。
+[建议操作] 保持 gpt-5.5、--max-retries 0，并将 TRADINGAGENTS_RAG_TOP_K 调为 5 以减少上下文。

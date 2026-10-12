@@ -1,0 +1,14 @@
+{
+  "ticker": "TSLA",
+  "as_of": "2025-03-01",
+  "candidates": 3,
+  "downloaded": 0,
+  "skipped_existing": 3,
+  "filtered_future": 0,
+  "download_failed": 0,
+  "chunk_documents": 9,
+  "documents_inserted": 0,
+  "chunks_inserted": 0,
+  "chunks_skipped": 2524,
+  "embedding_rows_written": 0
+}

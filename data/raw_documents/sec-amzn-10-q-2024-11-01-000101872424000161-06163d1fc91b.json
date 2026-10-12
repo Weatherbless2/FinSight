@@ -1,0 +1,22 @@
+{
+  "status": "succeeded",
+  "document_id": "sec-amzn-10-q-2024-11-01-000101872424000161",
+  "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872424000161/amzn-20240930.htm",
+  "source_hash": "06163d1fc91bc1cf0745a55608028ff4fb8157c9297e1b20678a3cd631d2b50e",
+  "content_type": "text/html",
+  "byte_count": 1385415,
+  "fetched_at": "2026-09-28T08:37:50.985738+00:00",
+  "metadata": {
+    "document_id": "sec-amzn-10-q-2024-11-01-000101872424000161",
+    "ticker": "AMZN",
+    "document_type": "quarterly_report",
+    "title": "AMAZON COM INC 10-Q filing",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872424000161/amzn-20240930.htm",
+    "source_hash": "06163d1fc91bc1cf0745a55608028ff4fb8157c9297e1b20678a3cd631d2b50e",
+    "published_at": "2024-11-01",
+    "available_at": "2024-11-01",
+    "fiscal_period": null,
+    "period_end": "2024-09-30",
+    "language": "en"
+  }
+}

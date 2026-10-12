@@ -1,0 +1,46 @@
+[观测说明] 本次是真实 LLM + LangGraph 运行；数据工具使用本地 fixture，不访问 StockTwits/Reddit 外部接口，外部行情波动不会影响主链路计时。Ctrl+C 才是终止，Ctrl+Z 会挂起进程。
+[运行参数] ticker=NVDA | trade_date=2025-03-01 | runs=1 | deep_model=gpt-5.5 | quick_model=gpt-5.5 | max_retries=0 | analysts=market,social,news,fundamentals
+[运行开始] ticker=NVDA | trade_date=2025-03-01 | 正在启动 LangGraph 固定工作流
+[步骤 01][开始] 市场分析师（Market Analyst） | 分析行情和技术指标，并判断是否需要调用市场工具
+[步骤 01][完成] 市场分析师（Market Analyst） | 耗时 8.2s | 当前累计步骤 1
+[步骤 02][开始] 市场工具节点（tools_market） | 获取行情、技术指标和经过校验的市场快照
+[步骤 02][完成] 市场工具节点（tools_market） | 耗时 0.0s | 当前累计步骤 2
+[步骤 03][开始] 市场分析师（Market Analyst） | 分析行情和技术指标，并判断是否需要调用市场工具
+[步骤 03][完成] 市场分析师（Market Analyst） | 耗时 14.9s | 当前累计步骤 3
+[步骤 04][开始] 市场工具节点（tools_market） | 获取行情、技术指标和经过校验的市场快照
+[步骤 04][完成] 市场工具节点（tools_market） | 耗时 0.0s | 当前累计步骤 4
+[步骤 05][开始] 市场分析师（Market Analyst） | 分析行情和技术指标，并判断是否需要调用市场工具
+[步骤 05][完成] 市场分析师（Market Analyst） | 耗时 2.5s | 当前累计步骤 5
+[步骤 06][开始] 市场工具节点（tools_market） | 获取行情、技术指标和经过校验的市场快照
+[步骤 06][完成] 市场工具节点（tools_market） | 耗时 0.0s | 当前累计步骤 6
+[步骤 07][开始] 市场分析师（Market Analyst） | 分析行情和技术指标，并判断是否需要调用市场工具
+[步骤 07][完成] 市场分析师（Market Analyst） | 耗时 96.9s | 当前累计步骤 7
+[步骤 08][开始] 清理市场上下文（Msg Clear Market） | 删除已消费的工具消息，准备进入下一个分析阶段
+[步骤 08][完成] 清理市场上下文（Msg Clear Market） | 耗时 0.0s | 当前累计步骤 8
+[步骤 09][开始] Sentiment Analyst（Sentiment Analyst） | 执行当前工作流节点
+[步骤 09][完成] Sentiment Analyst（Sentiment Analyst） | 耗时 67.1s | 当前累计步骤 9
+[步骤 10][开始] Msg Clear Sentiment（Msg Clear Sentiment） | 执行当前工作流节点
+[步骤 10][完成] Msg Clear Sentiment（Msg Clear Sentiment） | 耗时 0.0s | 当前累计步骤 10
+[步骤 11][开始] 新闻分析师（News Analyst） | 分析新闻、宏观因素和市场事件
+[步骤 11][完成] 新闻分析师（News Analyst） | 耗时 11.7s | 当前累计步骤 11
+[步骤 12][开始] 新闻工具节点（tools_news） | 获取新闻、宏观指标和相关市场信息
+[步骤 12][完成] 新闻工具节点（tools_news） | 耗时 0.0s | 当前累计步骤 12
+[步骤 13][开始] 新闻分析师（News Analyst） | 分析新闻、宏观因素和市场事件
+[步骤 13][完成] 新闻分析师（News Analyst） | 耗时 88.7s | 当前累计步骤 13
+[步骤 14][开始] 清理新闻上下文（Msg Clear News） | 删除已消费的新闻工具消息
+[步骤 14][完成] 清理新闻上下文（Msg Clear News） | 耗时 0.0s | 当前累计步骤 14
+[步骤 15][开始] 基本面分析师（Fundamentals Analyst） | 分析财报、结构化基本面数据和财报 RAG 证据
+[步骤 15][完成] 基本面分析师（Fundamentals Analyst） | 耗时 8.7s | 当前累计步骤 15
+[步骤 16][开始] 基本面工具节点（tools_fundamentals） | 获取财务数据或检索 PostgreSQL 财报 Chunk
+[步骤 16][完成] 基本面工具节点（tools_fundamentals） | 耗时 0.7s | 当前累计步骤 16
+[步骤 17][开始] 基本面分析师（Fundamentals Analyst） | 分析财报、结构化基本面数据和财报 RAG 证据
+[步骤 17][完成] 基本面分析师（Fundamentals Analyst） | 耗时 56.3s | 当前累计步骤 17
+[步骤 18][开始] 清理基本面上下文（Msg Clear Fundamentals） | 删除已消费的基本面工具消息
+[步骤 18][完成] 清理基本面上下文（Msg Clear Fundamentals） | 耗时 0.0s | 当前累计步骤 18
+[步骤 19][开始] 看多研究员（Bull Researcher） | 根据各分析师报告提炼看多理由
+[步骤 19][完成] 看多研究员（Bull Researcher） | 耗时 124.4s | 当前累计步骤 19
+[运行失败] 当前节点可能是：Bull Researcher
+[错误类型] OpenAIAPIError
+[错误信息] Error code: 524 - {'error': {'message': 'The origin web server did not return a complete response within the 120-second Proxy Read Timeout window. The connection was established, but the origin took too long to respond. (request id: 202609230435303678393618268d9d6NSCLo9EX)', 'type': 'bad_response_status_code', 'param': '', 'code': 'bad_response_status_code'}}
+[原因判断] 中转网关等待上游模型超过 120 秒；不是 PostgreSQL 或 RAG 查询错误。
+[建议操作] 保持 gpt-5.5、--max-retries 0，并将 TRADINGAGENTS_RAG_TOP_K 调为 5 以减少上下文。

@@ -1,0 +1,127 @@
+[观测说明] 本次是真实 LLM + LangGraph 运行；数据工具使用本地 fixture，不访问 StockTwits/Reddit 外部接口，外部行情波动不会影响主链路计时。Ctrl+C 才是终止，Ctrl+Z 会挂起进程。
+[运行参数] ticker=NVDA | trade_date=2025-03-01 | runs=1 | deep_model=gpt-5.5 | quick_model=gpt-5.5 | max_retries=0 | analysts=fundamentals
+[运行开始] ticker=NVDA | trade_date=2025-03-01 | 正在启动 LangGraph 固定工作流
+[步骤 01][开始] 基本面分析师（Fundamentals Analyst） | 分析财报、结构化基本面数据和财报 RAG 证据
+[步骤 01][完成] 基本面分析师（Fundamentals Analyst） | 耗时 24.1s | 当前累计步骤 1
+[步骤 02][开始] 基本面工具节点（tools_fundamentals） | 获取财务数据或检索 PostgreSQL 财报 Chunk
+[RAG开始] ticker=NVDA | as_of=2025-03-01 | strategy=hybrid | top_k=2 | query=截至2025-03-01，检索 NVDA 最近财报（FY2025 Q4/年度，若已发布）及管理层对数据中心、Blackwell、供应链、毛利率、资本开支、客户集中度、出口管制和未来展望的定量与定性信息；并总结主要风险与催化剂。
+[RAG完成] hits=2 | documents=1 | citations=2 | elapsed=640.485ms | future_safe=True
+[步骤 02][完成] 基本面工具节点（tools_fundamentals） | 耗时 0.6s | 当前累计步骤 2
+[步骤 03][开始] 基本面分析师（Fundamentals Analyst） | 分析财报、结构化基本面数据和财报 RAG 证据
+[步骤 03][完成] 基本面分析师（Fundamentals Analyst） | 耗时 88.3s | 当前累计步骤 3
+[步骤 04][开始] 清理基本面上下文（Msg Clear Fundamentals） | 删除已消费的基本面工具消息
+[步骤 04][完成] 清理基本面上下文（Msg Clear Fundamentals） | 耗时 0.0s | 当前累计步骤 4
+[步骤 05][开始] 看多研究员（Bull Researcher） | 根据各分析师报告提炼看多理由
+[步骤 05][完成] 看多研究员（Bull Researcher） | 耗时 108.9s | 当前累计步骤 5
+[步骤 06][开始] 研究经理（Research Manager） | 综合多空观点，形成研究结论
+[步骤 06][完成] 研究经理（Research Manager） | 耗时 41.3s | 当前累计步骤 6
+[步骤 07][开始] 交易员（Trader） | 根据研究结论生成模拟交易计划
+[步骤 07][完成] 交易员（Trader） | 耗时 15.6s | 当前累计步骤 7
+[步骤 08][开始] 激进风险分析师（Aggressive Analyst） | 从高风险、高收益角度复核交易计划
+[步骤 08][完成] 激进风险分析师（Aggressive Analyst） | 耗时 98.7s | 当前累计步骤 8
+[步骤 09][开始] 组合经理（Portfolio Manager） | 汇总研究和风险意见，生成最终评级
+[步骤 09][完成] 组合经理（Portfolio Manager） | 耗时 28.7s | 当前累计步骤 9
+[运行完成] decision=Overweight | 总耗时 407.9s | 步骤 9 | LLM 调用 7 | 工具调用 5
+{
+  "ticker": "NVDA",
+  "trade_date": "2025-03-01",
+  "decision": "Overweight",
+  "total_seconds": 407.9482,
+  "steps": 9,
+  "node_summary": {
+    "Fundamentals Analyst": {
+      "count": 2,
+      "mean": 56.2327,
+      "median": 56.2327,
+      "p50": 56.2327,
+      "p95": 85.1172,
+      "p99": 87.6847,
+      "min": 24.1387,
+      "max": 88.3266
+    },
+    "tools_fundamentals": {
+      "count": 1,
+      "mean": 0.6441,
+      "median": 0.6441,
+      "p50": 0.6441,
+      "p95": 0.6441,
+      "p99": 0.6441,
+      "min": 0.6441,
+      "max": 0.6441
+    },
+    "Msg Clear Fundamentals": {
+      "count": 1,
+      "mean": 0.0001,
+      "median": 0.0001,
+      "p50": 0.0001,
+      "p95": 0.0001,
+      "p99": 0.0001,
+      "min": 0.0001,
+      "max": 0.0001
+    },
+    "Bull Researcher": {
+      "count": 1,
+      "mean": 108.8854,
+      "median": 108.8854,
+      "p50": 108.8854,
+      "p95": 108.8854,
+      "p99": 108.8854,
+      "min": 108.8854,
+      "max": 108.8854
+    },
+    "Research Manager": {
+      "count": 1,
+      "mean": 41.3131,
+      "median": 41.3131,
+      "p50": 41.3131,
+      "p95": 41.3131,
+      "p99": 41.3131,
+      "min": 41.3131,
+      "max": 41.3131
+    },
+    "Trader": {
+      "count": 1,
+      "mean": 15.6252,
+      "median": 15.6252,
+      "p50": 15.6252,
+      "p95": 15.6252,
+      "p99": 15.6252,
+      "min": 15.6252,
+      "max": 15.6252
+    },
+    "Aggressive Analyst": {
+      "count": 1,
+      "mean": 98.7082,
+      "median": 98.7082,
+      "p50": 98.7082,
+      "p95": 98.7082,
+      "p99": 98.7082,
+      "min": 98.7082,
+      "max": 98.7082
+    },
+    "Portfolio Manager": {
+      "count": 1,
+      "mean": 28.7238,
+      "median": 28.7238,
+      "p50": 28.7238,
+      "p95": 28.7238,
+      "p99": 28.7238,
+      "min": 28.7238,
+      "max": 28.7238
+    }
+  },
+  "node_order": [
+    "Fundamentals Analyst",
+    "tools_fundamentals",
+    "Msg Clear Fundamentals",
+    "Bull Researcher",
+    "Research Manager",
+    "Trader",
+    "Aggressive Analyst",
+    "Portfolio Manager"
+  ],
+  "llm_calls": 7,
+  "tool_node_runs": 5,
+  "tokens_in": 15085,
+  "tokens_out": 8278
+}

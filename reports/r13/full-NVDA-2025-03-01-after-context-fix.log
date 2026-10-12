@@ -1,0 +1,20 @@
+[观测说明] 本次是真实 LLM + LangGraph 运行；数据工具使用本地 fixture，不访问 StockTwits/Reddit 外部接口，外部行情波动不会影响主链路计时。Ctrl+C 才是终止，Ctrl+Z 会挂起进程。
+[运行参数] ticker=NVDA | trade_date=2025-03-01 | runs=1 | deep_model=gpt-5.5 | quick_model=gpt-5.5 | max_retries=0 | analysts=fundamentals
+[运行开始] ticker=NVDA | trade_date=2025-03-01 | 正在启动 LangGraph 固定工作流
+[步骤 01][开始] 基本面分析师（Fundamentals Analyst） | 分析财报、结构化基本面数据和财报 RAG 证据
+[步骤 01][完成] 基本面分析师（Fundamentals Analyst） | 耗时 21.9s | 当前累计步骤 1
+[步骤 02][开始] 基本面工具节点（tools_fundamentals） | 获取财务数据或检索 PostgreSQL 财报 Chunk
+[RAG开始] ticker=NVDA | as_of=2025-03-01 | strategy=hybrid | top_k=2 | query=截至2025-03-01，分析 NVIDIA NVDA 最新财报（FY2025 Q4，2025年2月26日发布）及10-K/业绩电话会：数据中心、Blackwell、客户集中度、毛利率、资本回报、供应链、出口管制、竞争、管理层展望与主要风险
+[RAG完成] hits=2 | documents=1 | citations=2 | elapsed=646.784ms | future_safe=True
+[步骤 02][完成] 基本面工具节点（tools_fundamentals） | 耗时 0.7s | 当前累计步骤 2
+[步骤 03][开始] 基本面分析师（Fundamentals Analyst） | 分析财报、结构化基本面数据和财报 RAG 证据
+[步骤 03][完成] 基本面分析师（Fundamentals Analyst） | 耗时 98.4s | 当前累计步骤 3
+[步骤 04][开始] 清理基本面上下文（Msg Clear Fundamentals） | 删除已消费的基本面工具消息
+[步骤 04][完成] 清理基本面上下文（Msg Clear Fundamentals） | 耗时 0.0s | 当前累计步骤 4
+[步骤 05][开始] 看多研究员（Bull Researcher） | 根据各分析师报告提炼看多理由
+[步骤 05][完成] 看多研究员（Bull Researcher） | 耗时 124.5s | 当前累计步骤 5
+[运行失败] 当前节点可能是：Bull Researcher
+[错误类型] OpenAIAPIError
+[错误信息] Error code: 524 - {'error': {'message': 'The origin web server did not return a complete response within the 120-second Proxy Read Timeout window. The connection was established, but the origin took too long to respond. (request id: 20260923035448675457038268d9d6dCqyYiuC)', 'type': 'bad_response_status_code', 'param': '', 'code': 'bad_response_status_code'}}
+[原因判断] 中转网关等待上游模型超过 120 秒；不是 PostgreSQL 或 RAG 查询错误。
+[建议操作] 保持 gpt-5.5、--max-retries 0，并将 TRADINGAGENTS_RAG_TOP_K 调为 5 以减少上下文。

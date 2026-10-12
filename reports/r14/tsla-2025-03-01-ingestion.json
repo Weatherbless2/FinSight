@@ -1,0 +1,84 @@
+{
+  "input_path": "reports/r14/tsla-2025-03-01-discovery.json",
+  "output_dir": "data/raw_documents",
+  "as_of": "2025-03-01",
+  "total_candidates": 9,
+  "stored_count": 9,
+  "skipped_count": 0,
+  "filtered_future_count": 0,
+  "failed_count": 0,
+  "items": [
+    {
+      "document_id": "sec-tsla-10-k-2025-01-30-000162828025003063",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025003063/tsla-20241231.htm",
+      "status": "stored",
+      "raw_path": "data/raw_documents/sec-tsla-10-k-2025-01-30-000162828025003063-909977bde795.raw",
+      "manifest": "data/raw_documents/sec-tsla-10-k-2025-01-30-000162828025003063-909977bde795.json",
+      "source_hash": "909977bde79532470327226d37f3a7989946ba7a90072066fa15f2be24249acf"
+    },
+    {
+      "document_id": "sec-tsla-8-k-2025-01-29-000162828025002993",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025002993/tsla-20250129.htm",
+      "status": "stored",
+      "raw_path": "data/raw_documents/sec-tsla-8-k-2025-01-29-000162828025002993-bafbc32d1ca2.raw",
+      "manifest": "data/raw_documents/sec-tsla-8-k-2025-01-29-000162828025002993-bafbc32d1ca2.json",
+      "source_hash": "bafbc32d1ca281c486ca0b8456616619918888e59fdd530dd9ef8f4eaf948282"
+    },
+    {
+      "document_id": "sec-tsla-8-k-2025-01-02-000162828025000007",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025000007/tsla-20250102.htm",
+      "status": "stored",
+      "raw_path": "data/raw_documents/sec-tsla-8-k-2025-01-02-000162828025000007-6e735a27eb66.raw",
+      "manifest": "data/raw_documents/sec-tsla-8-k-2025-01-02-000162828025000007-6e735a27eb66.json",
+      "source_hash": "6e735a27eb66f617cce5baccc829c15a06befc4c4c45d2714b4f1d578af7cd8d"
+    },
+    {
+      "document_id": "sec-tsla-10-q-2024-10-24-000162828024043486",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024043486/tsla-20240930.htm",
+      "status": "stored",
+      "raw_path": "data/raw_documents/sec-tsla-10-q-2024-10-24-000162828024043486-9ba7180a167e.raw",
+      "manifest": "data/raw_documents/sec-tsla-10-q-2024-10-24-000162828024043486-9ba7180a167e.json",
+      "source_hash": "9ba7180a167ed58c6b31fae15b80b75f838f97950b83c54ca1afddcfb84b4844"
+    },
+    {
+      "document_id": "sec-tsla-10-q-2024-07-24-000162828024032662",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024032662/tsla-20240630.htm",
+      "status": "stored",
+      "raw_path": "data/raw_documents/sec-tsla-10-q-2024-07-24-000162828024032662-b59f9c2a573f.raw",
+      "manifest": "data/raw_documents/sec-tsla-10-q-2024-07-24-000162828024032662-b59f9c2a573f.json",
+      "source_hash": "b59f9c2a573fb59e259d039fbcd2409b075ace119429f86a016ef9465966e7b8"
+    },
+    {
+      "document_id": "sec-tsla-10-k-2024-01-29-000162828024002390",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828024002390/tsla-20231231.htm",
+      "status": "stored",
+      "raw_path": "data/raw_documents/sec-tsla-10-k-2024-01-29-000162828024002390-45b99c829a12.raw",
+      "manifest": "data/raw_documents/sec-tsla-10-k-2024-01-29-000162828024002390-45b99c829a12.json",
+      "source_hash": "45b99c829a12a1db8a2a9b31bac53c9a6900123d6656b21fcc5098074f7121c9"
+    },
+    {
+      "document_id": "sec-tsla-8-k-a-2023-10-10-000095017023052618",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000095017023052618/tsla-20230516.htm",
+      "status": "stored",
+      "raw_path": "data/raw_documents/sec-tsla-8-k-a-2023-10-10-000095017023052618-eccf29e556ca.raw",
+      "manifest": "data/raw_documents/sec-tsla-8-k-a-2023-10-10-000095017023052618-eccf29e556ca.json",
+      "source_hash": "eccf29e556ca7cdb07a4c447a8a1f1a11db44972e093f826eee116ab088d22af"
+    },
+    {
+      "document_id": "sec-tsla-10-k-a-2022-05-02-000156459022016871",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000156459022016871/tsla-10ka_20211231.htm",
+      "status": "stored",
+      "raw_path": "data/raw_documents/sec-tsla-10-k-a-2022-05-02-000156459022016871-0f7e12fc7a99.raw",
+      "manifest": "data/raw_documents/sec-tsla-10-k-a-2022-05-02-000156459022016871-0f7e12fc7a99.json",
+      "source_hash": "0f7e12fc7a991d42f63d34b7ba400150098a9966c8433ac96ffd12834e0e4233"
+    },
+    {
+      "document_id": "sec-tsla-10-k-a-2021-04-30-000156459021022604",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1318605/000156459021022604/tsla-10ka_20201231.htm",
+      "status": "stored",
+      "raw_path": "data/raw_documents/sec-tsla-10-k-a-2021-04-30-000156459021022604-5555cd0fce8f.raw",
+      "manifest": "data/raw_documents/sec-tsla-10-k-a-2021-04-30-000156459021022604-5555cd0fce8f.json",
+      "source_hash": "5555cd0fce8f34bd851d9a75efb899546e799854374662eddc0e2dc4249a585a"
+    }
+  ]
+}
