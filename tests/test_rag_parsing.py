@@ -5,7 +5,12 @@ from datetime import datetime, timezone
 import pytest
 
 from tradingagents.rag.ingestion import FetchedDocument
-from tradingagents.rag.parsing import DocumentParseError, parse_html_document
+from tradingagents.rag.parsing import (
+    DocumentParseError,
+    parse_document,
+    parse_html_document,
+    parse_pdf_document,
+)
 
 
 def make_fetched(html: str, content_type="text/html"):
@@ -125,4 +130,32 @@ def test_parser_rejects_non_html_content(content_type):
         parse_html_document(
             make_fetched("<html><body>text</body></html>", content_type),
             document_id="doc",
+        )
+
+
+def test_document_dispatch_keeps_html_path():
+    parsed = parse_document(
+        make_fetched("<html><body><p>Revenue increased.</p></body></html>"),
+        document_id="dispatch",
+    )
+
+    assert parsed.parser == "html"
+    assert parsed.blocks[0].source_locator.startswith("html-line:")
+
+
+def test_pdf_parser_reports_missing_optional_runtime(monkeypatch):
+    import builtins
+
+    original_import = builtins.__import__
+
+    def missing_fitz(name, *args, **kwargs):
+        if name == "fitz":
+            raise ImportError("missing fitz")
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", missing_fitz)
+    with pytest.raises(DocumentParseError, match="PyMuPDF"):
+        parse_pdf_document(
+            make_fetched("not a pdf", "application/pdf"),
+            document_id="pdf",
         )

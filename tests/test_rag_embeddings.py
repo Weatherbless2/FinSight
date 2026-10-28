@@ -5,9 +5,45 @@ import pytest
 from tradingagents.rag.chunking import DocumentChunk
 from tradingagents.rag.documents import DocumentChunkMetadata
 from tradingagents.rag.embeddings import (
+    BGE_M3_VECTOR_DIMENSIONS,
+    BGE3EmbeddingProvider,
     EmbeddingModelConfig,
     MockEmbeddingProvider,
 )
+
+
+def test_bge_m3_config_isolated_at_1024_dimensions():
+    config = EmbeddingModelConfig(
+        provider="tei",
+        model_name="BAAI/bge-m3",
+        model_version="bge-m3-1024-v1",
+        dimensions=BGE_M3_VECTOR_DIMENSIONS,
+        vector_store="bge_m3_1024",
+    )
+
+    assert config.dimensions == 1024
+    assert config.vector_store == "bge_m3_1024"
+
+
+def test_bge_m3_provider_validates_tei_batch(monkeypatch):
+    from types import SimpleNamespace
+
+    import httpx
+
+    vector = [0.01] * BGE_M3_VECTOR_DIMENSIONS
+
+    def fake_post(url, *, json, timeout):
+        assert url.endswith("/embed")
+        assert json == {"inputs": ["revenue increased"]}
+        assert timeout == 2.0
+        return SimpleNamespace(raise_for_status=lambda: None, json=lambda: [vector])
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    provider = BGE3EmbeddingProvider(timeout_seconds=2.0, max_retries=0)
+    result = provider.embed(["revenue increased"])
+
+    assert len(result) == 1
+    assert len(result[0]) == BGE_M3_VECTOR_DIMENSIONS
 
 
 def make_chunk(chunk_id: str, content: str) -> DocumentChunk:

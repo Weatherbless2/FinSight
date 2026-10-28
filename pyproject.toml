@@ -10,6 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "fastapi>=0.115.0",
+    "httpx>=0.28.0",
     "celery>=5.4.0",
     "langchain-core>=0.3.81",
     "backtrader>=1.9.78.123",
@@ -19,6 +20,7 @@ dependencies = [
     "langchain-openai>=0.3.23",
     "langgraph>=0.4.8",
     "langgraph-checkpoint-sqlite>=2.0.0",
+    "minio>=7.2.0",
     "pandas>=2.3.0",
     "parsel>=1.10.0",
     "python-dotenv>=1.0.0",

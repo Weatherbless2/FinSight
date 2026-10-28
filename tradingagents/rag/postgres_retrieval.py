@@ -13,7 +13,7 @@ from collections.abc import Collection, Sequence
 from dataclasses import dataclass
 from datetime import date
 
-from sqlalchemy import Engine, text
+from sqlalchemy import Engine, bindparam, text
 
 from tradingagents.rag.embeddings import EmbeddingProvider
 from tradingagents.rag.retrieval import RetrievalHit
@@ -50,12 +50,18 @@ class PostgresRetriever:
     embedding_provider: EmbeddingProvider
     candidate_k: int = DEFAULT_DATABASE_CANDIDATE_K
     rrf_k: int = DEFAULT_DATABASE_RRF_K
+    keyword_weight: float = 1.0
+    vector_weight: float = 1.0
 
     def __post_init__(self) -> None:
         if self.candidate_k < 1:
             raise ValueError("candidate_k must be positive")
         if self.rrf_k < 1:
             raise ValueError("rrf_k must be positive")
+        if self.keyword_weight < 0 or self.vector_weight < 0:
+            raise ValueError("RRF weights must be non-negative")
+        if self.keyword_weight + self.vector_weight == 0:
+            raise ValueError("RRF weights must not both be zero")
 
     @staticmethod
     def _validate_query(query: str, top_k: int, candidate_k: int) -> tuple[str, int]:
@@ -111,6 +117,25 @@ class PostgresRetriever:
         if not allowed:
             return "", {}
         return " AND d.document_type = ANY(:document_types)", {"document_types": list(allowed)}
+
+    def hydrate_hits(self, chunk_ids: Collection[str]) -> dict[str, RetrievalHit]:
+        """Read authoritative Chunk text and metadata after an external index hit."""
+        ids = tuple(dict.fromkeys(str(item).strip() for item in chunk_ids if str(item).strip()))
+        if not ids:
+            return {}
+        statement = text(
+            """
+            SELECT c.chunk_id, c.document_id, d.ticker, d.document_type,
+                   d.source_url, d.published_at, d.available_at,
+                   c.section_title, c.content
+            FROM document_chunks AS c
+            JOIN documents AS d ON d.document_id = c.document_id
+            WHERE c.chunk_id IN :chunk_ids
+            """
+        ).bindparams(bindparam("chunk_ids", expanding=True))
+        with self.engine.connect() as connection:
+            rows = connection.execute(statement, {"chunk_ids": list(ids)}).mappings().all()
+        return {row["chunk_id"]: self._to_hit(dict(row)) for row in rows}
 
     def keyword_search(
         self,
@@ -232,11 +257,11 @@ class PostgresRetriever:
             vector_hit = vector_by_id.get(chunk_id)
             keyword_rank = keyword_hits.index(keyword_hit) + 1 if keyword_hit else None
             vector_rank = vector_hits.index(vector_hit) + 1 if vector_hit else None
-            score = sum(
-                1.0 / (self.rrf_k + rank)
-                for rank in (keyword_rank, vector_rank)
-                if rank is not None
-            )
+            score = 0.0
+            if keyword_rank is not None:
+                score += self.keyword_weight / (self.rrf_k + keyword_rank)
+            if vector_rank is not None:
+                score += self.vector_weight / (self.rrf_k + vector_rank)
             source = vector_hit or keyword_hit
             assert source is not None
             fused.append(

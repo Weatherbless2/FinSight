@@ -24,6 +24,7 @@ from tradingagents.rag.embeddings import (
     OpenAIEmbeddingProvider,
 )
 from tradingagents.rag.evidence import build_database_evidence_bundle
+from tradingagents.rag.guards import filter_retrieval_hits
 from tradingagents.rag.online_fallback import OnlineSecFallback
 from tradingagents.rag.postgres import create_postgres_engine
 from tradingagents.rag.postgres_retrieval import PostgresRetriever
@@ -108,6 +109,14 @@ class PostgresRagSearchAdapter:
                 flush=True,
             )
         hits = self._retrieve(query, ticker=normalized_ticker, as_of=as_of)
+        guard = filter_retrieval_hits(
+            hits,
+            ticker=normalized_ticker,
+            trade_date=as_of,
+        )
+        if any(hit.available_at > as_of for hit in hits):
+            raise ValueError("citation is not available at the analysis date")
+        hits = guard.hits
         source = "postgres"
         if not hits and self.online_fallback is not None:
             hits = self.online_fallback.search(
@@ -117,6 +126,12 @@ class PostgresRagSearchAdapter:
                 top_k=self.top_k,
             )
             source = "online_sec"
+            guard = filter_retrieval_hits(
+                hits,
+                ticker=normalized_ticker,
+                trade_date=as_of,
+            )
+            hits = guard.hits
         evidence = (
             build_database_evidence_bundle(
                 hits,
@@ -144,6 +159,11 @@ class PostgresRagSearchAdapter:
             "as_of": as_of.isoformat(),
             "hits": [_hit_payload(hit) for hit in hits],
             "evidence": evidence.model_dump(mode="json") if evidence else None,
+            "guard": {
+                "allowed": guard.allowed,
+                "reason": guard.reason,
+                "error_code": guard.error_code,
+            },
             "trace": {
                 "run_id": run_id,
                 "query_fingerprint": _fingerprint(query, normalized_ticker, as_of),

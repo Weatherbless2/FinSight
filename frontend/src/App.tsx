@@ -78,7 +78,7 @@ function App() {
     try {
       const result = await searchDocuments(payload);
       setSearchResult(result);
-      setMessage(result.source === "postgres" ? "本地财报检索完成。" : "SEC 在线兜底完成，结果尚未入库。注意延迟可能更高。");
+      setMessage(result.fallback_reason || (result.source === "postgres" ? "本地财报检索完成。" : "SEC 在线兜底完成，结果尚未入库。注意延迟可能更高。"));
     } catch (cause) { setError(cause instanceof Error ? cause.message : "检索失败"); setMessage("检索失败。"); }
     finally { setBusy(null); }
   };
@@ -99,7 +99,7 @@ function App() {
 
   return <div className="app-shell">
     <header className="topbar">
-      <div className="brand"><div className="brand-mark"><Sparkles size={18} /></div><div><strong>TradeAgent</strong><span>金融研究工作台</span></div></div>
+      <div className="brand"><div className="brand-mark"><Sparkles size={18} /></div><div><strong>FinSight</strong><span>金融研究工作台</span></div></div>
       <div className="system-status"><span className="status-dot" /> FastAPI 服务正常 <a href="/docs" target="_blank" rel="noreferrer">API 文档 <ArrowUpRight size={13} /></a></div>
     </header>
 
@@ -135,7 +135,7 @@ function Coverage({ items, onRefresh }: { items: CoverageItem[]; onRefresh: () =
 }
 
 function SearchPanel({ result }: { result: SearchResponse }) {
-  return <section className="panel"><div className="panel-heading"><div><p className="eyebrow">证据层</p><h2>检索到的财报片段</h2></div><span className={`source-pill ${result.source}`}>{result.source === "postgres" ? "本地知识库" : "SEC 在线兜底"}</span></div><div className="metric-strip"><Metric icon={<Gauge size={15} />} label="检索耗时" value={`${result.elapsed_ms} ms`} /><Metric icon={<BookOpen size={15} />} label="命中文档" value={String(result.documents)} /><Metric icon={<FileSearch size={15} />} label="命中 Chunk" value={String(result.hits.length)} /><Metric icon={<Database size={15} />} label="日期边界" value={result.future_safe ? "通过" : "失败"} /></div><div className="evidence-list">{result.hits.map((hit, index) => <article className="evidence-item" key={hit.chunk_id}><div className="evidence-title"><span className="rank">{String(index + 1).padStart(2, "0")}</span><strong>{hit.section_title}</strong><span className="doc-type">{hit.document_type}</span></div><p>{hit.content}</p><footer>{hit.document_id} · available_at {hit.available_at} · <a href={hit.source_url} target="_blank" rel="noreferrer">查看来源 <ArrowUpRight size={12} /></a></footer></article>)}</div></section>;
+  return <section className="panel"><div className="panel-heading"><div><p className="eyebrow">证据层</p><h2>检索到的财报片段</h2></div><span className={`source-pill ${result.source}`}>{result.source === "postgres" ? "本地知识库" : "SEC 在线兜底"}</span></div>{result.fallback_reason && <div className="notice-box"><AlertTriangle size={15} />{result.fallback_reason}（请求策略：{result.requested_strategy || result.strategy}，实际策略：{result.strategy}）</div>}<div className="metric-strip"><Metric icon={<Gauge size={15} />} label="检索耗时" value={`${result.elapsed_ms} ms`} /><Metric icon={<BookOpen size={15} />} label="命中文档" value={String(result.documents)} /><Metric icon={<FileSearch size={15} />} label="命中 Chunk" value={String(result.hits.length)} /><Metric icon={<Database size={15} />} label="日期边界" value={result.future_safe ? "通过" : "失败"} /></div><div className="evidence-list">{result.hits.map((hit, index) => <article className="evidence-item" key={hit.chunk_id}><div className="evidence-title"><span className="rank">{String(index + 1).padStart(2, "0")}</span><strong>{hit.section_title}</strong><span className="doc-type">{hit.document_type}</span></div><p>{hit.content}</p><footer>{hit.document_id} · available_at {hit.available_at} · <a href={hit.source_url} target="_blank" rel="noreferrer">查看来源 <ArrowUpRight size={12} /></a></footer></article>)}</div></section>;
 }
 
 function AgentPanel({ result }: { result: AgentResponse }) {

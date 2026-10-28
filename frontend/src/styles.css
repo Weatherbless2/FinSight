@@ -41,6 +41,7 @@ textarea { min-height: 110px; resize: vertical; line-height: 1.55; }
 .helper-text { color: #687684; font-size: 12px; line-height: 1.55; }
 .control-panel > .helper-text { margin: 13px 0 0; }
 .error-box { gap: 7px; margin-top: 12px; padding: 10px; color: #a33b32; background: #fff1ef; border: 1px solid #efc4bf; border-radius: 5px; font-size: 12px; line-height: 1.45; }
+.notice-box { display: flex; gap: 7px; align-items: flex-start; margin: -4px 0 14px; padding: 10px; color: #8a5b0a; background: #fff8e8; border: 1px solid #efd69b; border-radius: 5px; font-size: 12px; line-height: 1.45; }
 .results-column { display: grid; gap: 16px; min-width: 0; }
 .icon-button { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #1769aa; background: #fff; border: 1px solid #c8d2da; border-radius: 5px; }
 .coverage-list { display: grid; gap: 7px; }

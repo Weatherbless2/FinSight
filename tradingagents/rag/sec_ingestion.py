@@ -21,6 +21,7 @@ from tradingagents.rag.ingestion import (
     write_failed_manifest,
 )
 from tradingagents.rag.sec_filings import SECFilingCandidate
+from tradingagents.rag.storage import ObjectStorage, StoredObject, store_document_object
 
 
 class SECIngestionError(RuntimeError):
@@ -136,6 +137,8 @@ def ingest_sec_candidates(
     timeout: float = 20.0,
     max_bytes: int = 25 * 1024 * 1024,
     fetcher: Fetcher = fetch_document,
+    object_storage: ObjectStorage | None = None,
+    object_bucket: str = "financial-raw",
 ) -> SECIngestionSummary:
     """下载一批 SEC 候选；单条失败只影响当前条目，整批仍继续。"""
     candidate_items = tuple(candidates)
@@ -185,6 +188,15 @@ def ingest_sec_candidates(
                 max_bytes=max_bytes,
             )
             metadata = _metadata_for_candidate(fetched, candidate)
+            stored_object: StoredObject | None = None
+            if object_storage is not None:
+                stored_object = store_document_object(
+                    object_storage,
+                    metadata,
+                    fetched.content,
+                    bucket=object_bucket,
+                    content_type=fetched.content_type,
+                )
             stored = store_raw_document(fetched, metadata, root)
         except Exception as exc:  # 每条文档独立失败，继续处理后续候选。
             manifest = write_failed_manifest(
@@ -203,15 +215,18 @@ def ingest_sec_candidates(
             *existing[candidate.document_id],
             ExistingDocument(candidate.document_id, metadata.source_hash, stored.manifest_path),
         )
-        items.append(
-            {
-                **base,
-                "status": "stored",
-                "raw_path": str(stored.raw_path),
-                "manifest": str(stored.manifest_path),
-                "source_hash": metadata.source_hash,
-            }
-        )
+        item = {
+            **base,
+            "status": "stored",
+            "raw_path": str(stored.raw_path),
+            "manifest": str(stored.manifest_path),
+            "source_hash": metadata.source_hash,
+        }
+        if stored_object is not None:
+            item["object_bucket"] = stored_object.bucket
+            item["object_key"] = stored_object.object_key
+            item["object_version"] = stored_object.version
+        items.append(item)
 
     return SECIngestionSummary(
         input_path="",

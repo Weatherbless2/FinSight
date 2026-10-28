@@ -13,11 +13,15 @@ from tradingagents.rag.agentic_retrieval import (
     RetrievalTrace,
     query_fingerprint,
 )
+from tradingagents.rag.cache import build_rag_cache_key
+from tradingagents.rag.context_compression import EvidenceSet, compress_evidence
 from tradingagents.rag.documents import (
     DocumentChunkMetadata,
     FinancialDocumentMetadata,
 )
 from tradingagents.rag.embeddings import (
+    BGE_M3_VECTOR_DIMENSIONS,
+    BGE3EmbeddingProvider,
     ChunkEmbedding,
     EmbeddingModelConfig,
     EmbeddingProvider,
@@ -45,6 +49,7 @@ from tradingagents.rag.evidence import (
     build_database_evidence_bundle,
     build_evidence_bundle,
 )
+from tradingagents.rag.guards import GuardDecision, filter_retrieval_hits
 from tradingagents.rag.ingestion import (
     DocumentIngestionError,
     FetchedDocument,
@@ -55,6 +60,18 @@ from tradingagents.rag.ingestion import (
     write_failed_manifest,
 )
 from tradingagents.rag.online_fallback import OnlineFallbackError, OnlineSecFallback
+from tradingagents.rag.opensearch import (
+    OpenSearchClient,
+    OpenSearchHTTPError,
+    build_bm25_mapping,
+    build_bm25_query,
+    build_chunk_projection,
+    build_knn_query,
+)
+from tradingagents.rag.opensearch_retrieval import (
+    OpenSearchRetriever,
+    create_opensearch_retriever,
+)
 from tradingagents.rag.parsing import (
     DocumentParseError,
     ParsedBlock,
@@ -97,9 +114,17 @@ from tradingagents.rag.sec_ingestion import (
     ingest_sec_discovery_file,
     load_sec_candidates,
 )
+from tradingagents.rag.storage import (
+    LocalObjectStorage,
+    MinioObjectStorage,
+    ObjectStorage,
+    StoredObject,
+)
 
 __all__ = [
     "DocumentChunkMetadata",
+    "BGE_M3_VECTOR_DIMENSIONS",
+    "BGE3EmbeddingProvider",
     "ChunkConflictError",
     "ChunkRecord",
     "DuplicateSourceHashError",
@@ -117,6 +142,19 @@ __all__ = [
     "postgres_url_from_env",
     "DocumentIngestionError",
     "DocumentParseError",
+    "build_bm25_mapping",
+    "build_bm25_query",
+    "build_chunk_projection",
+    "build_knn_query",
+    "OpenSearchClient",
+    "OpenSearchHTTPError",
+    "OpenSearchRetriever",
+    "create_opensearch_retriever",
+    "EvidenceSet",
+    "compress_evidence",
+    "build_rag_cache_key",
+    "GuardDecision",
+    "filter_retrieval_hits",
     "ChunkEmbedding",
     "EmbeddingModelConfig",
     "EmbeddingProvider",
@@ -171,4 +209,8 @@ __all__ = [
     "ingest_sec_candidates",
     "ingest_sec_discovery_file",
     "load_sec_candidates",
+    "LocalObjectStorage",
+    "MinioObjectStorage",
+    "ObjectStorage",
+    "StoredObject",
 ]

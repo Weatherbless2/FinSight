@@ -22,6 +22,8 @@ from sqlalchemy import text
 from tradingagents.rag.embeddings import OllamaEmbeddingProvider
 from tradingagents.rag.ingestion_pipeline import run_sec_ingestion_pipeline
 from tradingagents.rag.online_fallback import OnlineSecFallback
+from tradingagents.rag.opensearch import OpenSearchClient
+from tradingagents.rag.opensearch_retrieval import create_opensearch_retriever
 from tradingagents.rag.postgres import create_postgres_engine
 from tradingagents.rag.postgres_retrieval import PostgresRetriever
 from tradingagents.reporting_schema import structure_fundamentals_report
@@ -199,13 +201,42 @@ def _expand_query(query: str) -> str:
     return " ".join(expanded.split())
 
 
+def _is_embedding_unavailable(error: Exception) -> bool:
+    """Recognize local embedding outages without hiding database/code errors."""
+    messages: list[str] = []
+    current: BaseException | None = error
+    while current is not None:
+        messages.append(str(current).lower())
+        current = current.__cause__ or current.__context__
+    text = " ".join(messages)
+    return any(
+        marker in text
+        for marker in (
+            "ollama embedding api failed",
+            "connection refused",
+            "connecterror",
+            "embedding service unavailable",
+        )
+    )
+
+
 class DemoService:
     """演示页的真实检索服务；数据库和模型只在服务启动时创建一次。"""
 
     def __init__(self) -> None:
         self.engine = create_postgres_engine()
         self.provider = OllamaEmbeddingProvider()
-        self.retriever = PostgresRetriever(engine=self.engine, embedding_provider=self.provider)
+        postgres_retriever = PostgresRetriever(engine=self.engine, embedding_provider=self.provider)
+        if os.getenv("TRADINGAGENTS_SEARCH_BACKEND", "postgres").lower() == "opensearch":
+            self.retriever = create_opensearch_retriever(
+                client=OpenSearchClient(
+                    base_url=os.getenv("OPENSEARCH_URL", "http://127.0.0.1:9200")
+                ),
+                postgres_retriever=postgres_retriever,
+                index=os.getenv("OPENSEARCH_INDEX", "rag-chunks-v1"),
+            )
+        else:
+            self.retriever = postgres_retriever
         self.online_fallback = None
         if os.getenv("TRADINGAGENTS_ENABLE_ONLINE_FALLBACK", "false").lower() in {"1", "true", "yes", "on"}:
             self.online_fallback = OnlineSecFallback(self.provider)
@@ -226,10 +257,23 @@ class DemoService:
         expanded = _expand_query(query)
         started = time.perf_counter()
         source = "postgres"
+        requested_strategy = strategy
+        fallback_reason: str | None = None
         with self.lock:
-            hits = getattr(self.retriever, f"{strategy}_search")(
-                expanded, ticker=ticker, as_of=as_of, top_k=top_k
-            )
+            try:
+                hits = getattr(self.retriever, f"{strategy}_search")(
+                    expanded, ticker=ticker, as_of=as_of, top_k=top_k
+                )
+            except RuntimeError as exc:
+                if strategy not in {"vector", "hybrid"} or not _is_embedding_unavailable(exc):
+                    raise
+                # Keyword search uses PostgreSQL tsvector only and remains useful
+                # when the optional local embedding service is not running.
+                fallback_reason = "Ollama embedding service unavailable; used keyword retrieval"
+                strategy = "keyword"
+                hits = self.retriever.keyword_search(
+                    expanded, ticker=ticker, as_of=as_of, top_k=top_k
+                )
             if not hits and self.online_fallback is not None:
                 hits = self.online_fallback.search(
                     expanded, ticker=ticker, as_of=as_of, top_k=top_k
@@ -241,6 +285,8 @@ class DemoService:
             "ticker": ticker,
             "as_of": as_of.isoformat(),
             "strategy": strategy,
+            "requested_strategy": requested_strategy,
+            "fallback_reason": fallback_reason,
             "source": source,
             "persisted": source == "postgres",
             "expanded_query": expanded,
@@ -262,7 +308,6 @@ class DemoService:
                 for hit in hits
             ],
         }
-
     def run_agent(self, payload: dict) -> dict:
         """调用现有基本面专项 Agent，不另写一套回答逻辑。"""
         from tradingagents.observability.runner import InstrumentedRunner

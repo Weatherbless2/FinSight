@@ -99,6 +99,23 @@ def test_rrf_merges_vector_only_and_keyword_only_candidates():
     assert next(hit for hit in hits if hit.chunk_id == "keyword-1").keyword_rank == 1
 
 
+def test_weighted_rrf_can_prioritize_keyword_rank():
+    document = make_document("weighted")
+    vector_only = make_indexed_chunk(document, "vector-1", "semantic evidence.", unit_vector(1))
+    keyword_only = make_indexed_chunk(document, "keyword-1", "revenue exact.", unit_vector(2))
+    provider = FixedEmbeddingProvider({"revenue": unit_vector(1)})
+
+    keyword_heavy = HybridRetriever(
+        (vector_only, keyword_only),
+        provider,
+        candidate_k=2,
+        keyword_weight=4.0,
+        vector_weight=1.0,
+    )
+
+    assert keyword_heavy.search("revenue", ticker="AAPL", as_of=date(2025, 1, 1), top_k=2)[0].chunk_id == "keyword-1"
+
+
 def test_document_type_filter_and_empty_query_guard():
     """边界：文档类型可过滤，空查询不能触发 Embedding 调用。"""
     query_vector = unit_vector(0)

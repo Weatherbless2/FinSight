@@ -17,7 +17,9 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from tradingagents.rag.chunking import DocumentChunk
 
 POSTGRES_VECTOR_DIMENSIONS = 1536
+BGE_M3_VECTOR_DIMENSIONS = 1024
 EmbeddingStatus = Literal["succeeded", "failed"]
+VectorStoreContract = Literal["legacy_pgvector_1536", "bge_m3_1024"]
 
 
 class EmbeddingModelConfig(BaseModel):
@@ -30,14 +32,25 @@ class EmbeddingModelConfig(BaseModel):
     model_version: str = Field(default="v1", min_length=1, max_length=64)
     dimensions: int = Field(default=POSTGRES_VECTOR_DIMENSIONS, ge=1)
     native_dimensions: int | None = Field(default=None, ge=1)
+    vector_store: VectorStoreContract = "legacy_pgvector_1536"
 
     @model_validator(mode="after")
     def validate_database_dimension(self) -> EmbeddingModelConfig:
         """禁止生成与数据库 VECTOR(1536) 不一致的向量。"""
-        if self.dimensions != POSTGRES_VECTOR_DIMENSIONS:
+        expected_dimensions = (
+            BGE_M3_VECTOR_DIMENSIONS
+            if self.vector_store == "bge_m3_1024"
+            else POSTGRES_VECTOR_DIMENSIONS
+        )
+        if self.dimensions != expected_dimensions:
+            storage_label = (
+                f"PostgreSQL VECTOR({expected_dimensions})"
+                if self.vector_store == "legacy_pgvector_1536"
+                else f"versioned VECTOR({expected_dimensions})"
+            )
             raise ValueError(
-                "dimensions must equal PostgreSQL VECTOR(1536); "
-                "changing dimensions requires a separate database migration"
+                f"dimensions must equal {storage_label} ({self.vector_store} contract); "
+                "changing dimensions requires a separate versioned database migration"
             )
         if self.native_dimensions is not None and self.native_dimensions > self.dimensions:
             raise ValueError("native_dimensions cannot exceed storage dimensions")
@@ -230,6 +243,67 @@ class OpenAIEmbeddingProvider(EmbeddingProvider):
                 time.sleep(self.backoff_seconds * (2**attempt))
         raise RuntimeError(f"embedding API failed after retries: {last_error}") from last_error
 
+
+class BGE3EmbeddingProvider(EmbeddingProvider):
+    """BGE-M3/TEI adapter with an explicit 1024-dimensional storage contract."""
+
+    def __init__(
+        self,
+        config: EmbeddingModelConfig | None = None,
+        *,
+        base_url: str | None = None,
+        max_retries: int = 2,
+        backoff_seconds: float = 0.5,
+        timeout_seconds: float = 60.0,
+    ) -> None:
+        super().__init__(
+            config
+            or EmbeddingModelConfig(
+                provider="tei",
+                model_name="BAAI/bge-m3",
+                model_version="bge-m3-1024-v1",
+                dimensions=BGE_M3_VECTOR_DIMENSIONS,
+                vector_store="bge_m3_1024",
+            )
+        )
+        if self.config.vector_store != "bge_m3_1024":
+            raise ValueError("BGE3EmbeddingProvider requires the bge_m3_1024 contract")
+        if max_retries < 0:
+            raise ValueError("max_retries must be non-negative")
+        self.base_url = (base_url or os.getenv("BGE_M3_TEI_URL") or "http://127.0.0.1:8080").rstrip("/")
+        self.max_retries = max_retries
+        self.backoff_seconds = max(0.0, backoff_seconds)
+        self.timeout_seconds = max(0.1, timeout_seconds)
+
+    def embed(self, texts: Sequence[str]) -> tuple[tuple[float, ...], ...]:
+        """Call the TEI /embed endpoint and validate every returned vector."""
+        if not texts:
+            return ()
+        import httpx
+
+        last_error: Exception | None = None
+        for attempt in range(self.max_retries + 1):
+            try:
+                response = httpx.post(
+                    urljoin(self.base_url + "/", "embed"),
+                    json={"inputs": list(texts)},
+                    timeout=self.timeout_seconds,
+                )
+                response.raise_for_status()
+                raw_vectors = response.json()
+                if not isinstance(raw_vectors, list) or len(raw_vectors) != len(texts):
+                    raise ValueError("TEI returned an unexpected batch size")
+                return tuple(
+                    validate_embedding_vector(vector, dimensions=BGE_M3_VECTOR_DIMENSIONS)
+                    for vector in raw_vectors
+                )
+            except Exception as exc:  # noqa: BLE001 - preserve retryable provider errors
+                last_error = exc
+                if attempt >= self.max_retries:
+                    break
+                time.sleep(self.backoff_seconds * (2**attempt))
+        raise RuntimeError(f"BGE-M3 TEI embedding failed after retries: {last_error}") from last_error
+
 class OllamaEmbeddingProvider(EmbeddingProvider):
     """调用本机 Ollama 的 Embedding 模型，并适配 PostgreSQL 1536 维存储。"""
 
@@ -283,26 +357,40 @@ class OllamaEmbeddingProvider(EmbeddingProvider):
                 raw_vectors = response.json().get("embeddings")
                 if not isinstance(raw_vectors, list) or len(raw_vectors) != len(texts):
                     raise ValueError("Ollama returned an unexpected batch size")
-                native_dimensions = self.config.native_dimensions
-                if native_dimensions is None:
-                    raise ValueError("native_dimensions is required for Ollama provider")
-                vectors = []
-                for raw_vector in raw_vectors:
-                    native = validate_embedding_vector(
-                        raw_vector,
-                        dimensions=native_dimensions,
-                    )
-                    padded = native + (0.0,) * (self.config.dimensions - native_dimensions)
-                    vectors.append(
-                        validate_embedding_vector(
-                            padded,
-                            dimensions=self.config.dimensions,
-                        )
-                    )
-                return tuple(vectors)
+                return self._normalize_vectors(raw_vectors)
             except Exception as exc:  # noqa: BLE001 - 转成上层可重试结果
                 last_error = exc
                 if attempt >= self.max_retries:
                     break
                 time.sleep(self.backoff_seconds * (2**attempt))
+
+        # Ollama 0.1/0.2 exposes only the singular /api/embeddings endpoint.
+        # Keep this compatibility path so older lightweight installs work too.
+        try:
+            raw_vectors = []
+            for text in texts:
+                response = httpx.post(
+                    urljoin(self.base_url + "/", "api/embeddings"),
+                    json={"model": self.config.model_name, "prompt": text},
+                    timeout=self.timeout_seconds,
+                )
+                response.raise_for_status()
+                raw_vector = response.json().get("embedding")
+                if not isinstance(raw_vector, list):
+                    raise ValueError("Ollama returned no embedding")
+                raw_vectors.append(raw_vector)
+            return self._normalize_vectors(raw_vectors)
+        except Exception as exc:  # noqa: BLE001 - preserve useful final error
+            last_error = exc
         raise RuntimeError(f"Ollama embedding API failed after retries: {last_error}") from last_error
+
+    def _normalize_vectors(self, raw_vectors: Sequence[Sequence[float]]) -> tuple[tuple[float, ...], ...]:
+        native_dimensions = self.config.native_dimensions
+        if native_dimensions is None:
+            raise ValueError("native_dimensions is required for Ollama provider")
+        vectors = []
+        for raw_vector in raw_vectors:
+            native = validate_embedding_vector(raw_vector, dimensions=native_dimensions)
+            padded = native + (0.0,) * (self.config.dimensions - native_dimensions)
+            vectors.append(validate_embedding_vector(padded, dimensions=self.config.dimensions))
+        return tuple(vectors)

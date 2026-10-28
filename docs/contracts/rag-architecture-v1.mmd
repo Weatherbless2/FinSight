@@ -1,0 +1,21 @@
+flowchart LR
+    SRC[原始财报与公告] -->|不可变对象 版本 SHA-256| MINIO[MinIO]
+    MINIO --> AIRFLOW[Airflow 解析调度]
+    AIRFLOW --> PARSE[PyMuPDF / pdfplumber / PaddleOCR]
+    PARSE --> CHUNK[结构化 Chunk]
+    CHUNK -->|原文 元数据 权限 日期| PG[(PostgreSQL 可信数据源)]
+    CHUNK -->|模型版本维度| TEI[BGE-M3 / TEI 1024d]
+    TEI -->|chunk_id + vector + index_version| OS[(OpenSearch)]
+    PG -->|可重建索引记录| OS
+    Q[查询 ticker trade_date ACL] --> API[FastAPI]
+    API --> LG[LangGraph search_docs]
+    LG -->|过滤后并行召回| OS
+    OS -->|BM25 + Vector TopK| RRF[加权 RRF]
+    RRF --> RERANK[BGE-Reranker-v2-m3]
+    RERANK -->|chunk_id| PG
+    PG -->|回读原文并复核日期权限引用| GUARD[确定性护栏]
+    GUARD -->|evidence_set| LG
+    LG --> ANSWER[带引用回答或结构化拒答]
+    API -. trace metrics .-> OBS[OpenTelemetry / Prometheus / Grafana / Langfuse]
+    API -. cache task state .-> REDIS[(Redis)]
+    SECRETS[Vault] -. secrets .-> API

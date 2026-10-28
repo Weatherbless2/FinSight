@@ -32,6 +32,8 @@ export interface SearchResponse {
   ticker: string;
   as_of: string;
   strategy: Strategy;
+  requested_strategy?: Strategy;
+  fallback_reason?: string | null;
   source: "postgres" | "online_sec";
   persisted: boolean;
   expanded_query: string;

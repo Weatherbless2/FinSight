@@ -45,10 +45,16 @@ def test_load_real_r12d_batch_has_expected_input_scale():
     root = __import__("pathlib").Path(__file__).parents[1] / "data" / "processed_documents"
     batch = load_import_batch(root)
 
-    assert len(batch.documents) == 13
-    assert len(batch.chunks) == 1092
-    assert {document.ticker for document in batch.documents} == {"AAPL", "MSFT", "NVDA"}
-    assert len({record.chunk.chunk_id for record in batch.chunks}) == 1092
+    assert len(batch.documents) == 25
+    assert len(batch.chunks) == 3027
+    assert {document.ticker for document in batch.documents} == {
+        "AAPL",
+        "AMZN",
+        "MSFT",
+        "NVDA",
+        "TSLA",
+    }
+    assert len({record.chunk.chunk_id for record in batch.chunks}) == 3027
 
 
 def test_batch_deduplicates_identical_rows_but_rejects_conflicts():

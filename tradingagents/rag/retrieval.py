@@ -59,6 +59,7 @@ class RetrievalHit:
     fused_score: float
     vector_rank: int | None
     keyword_rank: int | None
+    rerank_score: float = 0.0
 
 
 def _tokens(text: str) -> tuple[str, ...]:
@@ -95,11 +96,15 @@ class HybridRetriever:
         *,
         candidate_k: int = DEFAULT_CANDIDATE_K,
         rrf_k: int = DEFAULT_RRF_K,
+        keyword_weight: float = 1.0,
+        vector_weight: float = 1.0,
     ) -> None:
         if candidate_k < 1:
             raise ValueError("candidate_k must be positive")
         if rrf_k < 1:
             raise ValueError("rrf_k must be positive")
+        if keyword_weight < 0 or vector_weight < 0 or keyword_weight + vector_weight == 0:
+            raise ValueError("RRF weights must be non-negative and not both zero")
         ids = [item.chunk.metadata.chunk_id for item in chunks]
         if len(ids) != len(set(ids)):
             raise ValueError("chunk_id must be unique in a retrieval index")
@@ -107,6 +112,8 @@ class HybridRetriever:
         self._embedding_provider = embedding_provider
         self._candidate_k = candidate_k
         self._rrf_k = rrf_k
+        self._keyword_weight = keyword_weight
+        self._vector_weight = vector_weight
 
     def search(
         self,
@@ -177,12 +184,11 @@ class HybridRetriever:
         for chunk_id, item in by_id.items():
             vector_info = vector_rank.get(chunk_id)
             keyword_info = keyword_rank.get(chunk_id)
-            ranks = []
+            fused_score = 0.0
             if vector_info is not None:
-                ranks.append(vector_info[0])
+                fused_score += self._vector_weight / (self._rrf_k + vector_info[0])
             if keyword_info is not None:
-                ranks.append(keyword_info[0])
-            fused_score = sum(1.0 / (self._rrf_k + rank) for rank in ranks)
+                fused_score += self._keyword_weight / (self._rrf_k + keyword_info[0])
             hits.append(
                 RetrievalHit(
                     chunk_id=chunk_id,

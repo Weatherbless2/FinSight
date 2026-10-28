@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from collections import Counter
+from collections.abc import Callable
 from dataclasses import dataclass
 from html import unescape
 from typing import Literal
@@ -61,6 +62,8 @@ class ParsedDocument:
     source_url: str
     title: str
     blocks: tuple[ParsedBlock, ...]
+    parser: str = "html"
+    warnings: tuple[str, ...] = ()
 
     @property
     def text(self) -> str:
@@ -199,3 +202,127 @@ def parse_html_document(
         title=title or document_id,
         blocks=tuple(blocks),
     )
+
+
+OCRPage = Callable[[bytes, int], tuple[str, float]]
+
+
+def parse_pdf_document(
+    fetched: FetchedDocument,
+    *,
+    document_id: str,
+    ocr_page: OCRPage | None = None,
+) -> ParsedDocument:
+    """Extract PDF pages, using OCR only when a page has no text layer.
+
+    PyMuPDF is the primary page/text extractor and pdfplumber is used for table
+    rows when available.  OCR is injected as a callback so deployments can use
+    PaddleOCR without coupling the core parser to a GPU runtime.
+    """
+    if fetched.content_type not in {"application/pdf", "application/octet-stream"}:
+        raise DocumentParseError(
+            f"PDF parser does not support content_type={fetched.content_type!r}"
+        )
+    if not fetched.content:
+        raise DocumentParseError("document body is empty")
+    try:
+        import fitz  # type: ignore[import-not-found]
+    except ImportError as exc:
+        raise DocumentParseError("PDF parser requires PyMuPDF; install package 'pymupdf'") from exc
+
+    try:
+        pdf = fitz.open(stream=fetched.content, filetype="pdf")
+    except Exception as exc:  # noqa: BLE001 - normalize provider errors
+        raise DocumentParseError(f"cannot open PDF: {exc}") from exc
+
+    blocks: list[ParsedBlock] = []
+    warnings: list[str] = []
+    tables_by_page: dict[int, tuple[str, ...]] = {}
+    try:
+        import pdfplumber  # type: ignore[import-not-found]
+
+        with pdfplumber.open(__import__("io").BytesIO(fetched.content)) as plumber_pdf:
+            for page_number, plumber_page in enumerate(plumber_pdf.pages, start=1):
+                rows = []
+                for table in plumber_page.extract_tables() or []:
+                    for row in table:
+                        values = [_normalize_text(str(value or "")) for value in row]
+                        values = [value for value in values if value]
+                        if values:
+                            rows.append(" | ".join(values))
+                if rows:
+                    tables_by_page[page_number] = tuple(rows)
+    except ImportError:
+        warnings.append("pdfplumber unavailable; table extraction skipped")
+    except Exception as exc:  # noqa: BLE001 - text extraction remains usable
+        warnings.append(f"pdfplumber table extraction failed: {exc}")
+    try:
+        for page_number, page in enumerate(pdf, start=1):
+            text = _normalize_text(page.get_text("text"))
+            if text:
+                blocks.append(
+                    ParsedBlock(
+                        ordinal=len(blocks),
+                        block_type="paragraph",
+                        text=text,
+                        section_title=document_id,
+                        source_locator=f"pdf-page:{page_number}",
+                    )
+                )
+                for table_text in tables_by_page.get(page_number, ()):
+                    blocks.append(
+                        ParsedBlock(
+                            ordinal=len(blocks),
+                            block_type="table",
+                            text=table_text,
+                            section_title=document_id,
+                            source_locator=f"pdf-page:{page_number}:table",
+                        )
+                    )
+                continue
+            if ocr_page is None:
+                warnings.append(f"page {page_number} has no text layer and was not OCRed")
+                continue
+            try:
+                ocr_text, confidence = ocr_page(page.get_pixmap().tobytes("png"), page_number)
+            except Exception as exc:  # noqa: BLE001 - retain page-level failure
+                warnings.append(f"page {page_number} OCR failed: {exc}")
+                continue
+            cleaned = _normalize_text(ocr_text)
+            if cleaned:
+                blocks.append(
+                    ParsedBlock(
+                        ordinal=len(blocks),
+                        block_type="paragraph",
+                        text=cleaned,
+                        section_title=document_id,
+                        source_locator=f"pdf-page:{page_number}:ocr:{confidence:.3f}",
+                    )
+                )
+            else:
+                warnings.append(f"page {page_number} OCR returned no text")
+    finally:
+        pdf.close()
+
+    if not blocks:
+        raise DocumentParseError("no usable text blocks found in PDF document")
+    return ParsedDocument(
+        document_id=document_id,
+        source_url=fetched.source_url,
+        title=document_id,
+        blocks=tuple(blocks),
+        parser="pdf-pymupdf" if not any(":ocr:" in block.source_locator for block in blocks) else "pdf-pymupdf-ocr",
+        warnings=tuple(warnings),
+    )
+
+
+def parse_document(
+    fetched: FetchedDocument,
+    *,
+    document_id: str,
+    ocr_page: OCRPage | None = None,
+) -> ParsedDocument:
+    """Dispatch HTML and PDF documents to their format-specific parser."""
+    if fetched.content_type in {"text/html", "application/xhtml+xml"}:
+        return parse_html_document(fetched, document_id=document_id)
+    return parse_pdf_document(fetched, document_id=document_id, ocr_page=ocr_page)

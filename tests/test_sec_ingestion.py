@@ -10,6 +10,7 @@ from tradingagents.rag.sec_ingestion import (
     ingest_sec_candidates,
     ingest_sec_discovery_file,
 )
+from tradingagents.rag.storage import LocalObjectStorage
 
 
 def make_candidate(
@@ -157,3 +158,20 @@ def test_invalid_discovery_file_is_rejected(tmp_path):
         assert "invalid SEC candidate" in str(exc)
     else:
         raise AssertionError("invalid discovery input should be rejected")
+
+
+def test_batch_download_can_write_the_same_immutable_object_to_object_storage(tmp_path):
+    candidate = make_candidate("sec-tsla-object")
+    object_storage = LocalObjectStorage(tmp_path / "objects")
+    summary = ingest_sec_candidates(
+        [candidate],
+        output_dir=tmp_path / "raw",
+        as_of=date(2025, 3, 1),
+        fetcher=make_fetcher({candidate.source_url: b"object-bytes"}, []),
+        object_storage=object_storage,
+    )
+
+    item = summary.items[0]
+    assert item["object_bucket"] == "financial-raw"
+    assert item["object_key"].endswith(".source")
+    assert object_storage.get(item["object_bucket"], item["object_key"], version=item["object_version"]) == b"object-bytes"

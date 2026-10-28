@@ -16,6 +16,7 @@ from tradingagents.rag.postgres import (
 )
 from tradingagents.rag.sec_filings import SECClient
 from tradingagents.rag.sec_ingestion import ingest_sec_candidates
+from tradingagents.rag.storage import MinioObjectStorage
 
 
 def run_sec_ingestion_pipeline(
@@ -44,6 +45,12 @@ def run_sec_ingestion_pipeline(
         output_dir=raw_dir,
         as_of=as_of,
         user_agent=client.user_agent,
+        object_storage=(
+            MinioObjectStorage()
+            if os.getenv("TRADINGAGENTS_OBJECT_STORAGE", "local").lower() == "minio"
+            else None
+        ),
+        object_bucket=os.getenv("MINIO_BUCKET", "financial-raw"),
     )
 
     # 复用已验证的解析与 Chunk 规则；输入按 ticker 筛选，避免重处理其他公司。
