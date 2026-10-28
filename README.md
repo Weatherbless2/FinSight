@@ -10,26 +10,7 @@ TradeAgent 是一个面向金融研究和模拟决策的多智能体项目。它
 
 用户输入股票代码、分析日期和问题后，系统先按日期过滤可用财报，再从 PostgreSQL + pgvector 检索相关 Chunk；基本面 Agent 结合检索证据组织结论，LangGraph 负责控制多智能体流程，FastAPI 提供接口，React 页面展示证据、报告和任务进度。
 
-## 当前进度
 
-截至当前仓库最新提交，核心链路已经完成并上传：
-
-| 模块 | 状态 | 当前情况 |
-| --- | --- | --- |
-| LangGraph 多智能体工作流 | 已完成 | 分析师、研究员、交易员、风险角色和组合经理按固定图运行 |
-| 局部工具调用循环 | 已完成 | 模型决定调用工具，ToolNode 执行，结果回写原 Agent |
-| AgentState 状态管理 | 已完成 | 通过中心状态传递报告、消息、辩论轮次和交易计划 |
-| 工具参数校验 | 已完成 | 使用 Pydantic 校验股票代码、日期、指标和财报参数 |
-| 财报采集和处理 | 已完成 | 支持 SEC 公开财报发现、下载、哈希校验、清洗和 Chunk 切分 |
-| PostgreSQL + pgvector | 已完成 | 保存文档、Chunk、全文索引、Embedding 状态和向量 |
-| RAG 检索 | 已完成 | 支持关键词、向量和 Hybrid 检索，并过滤股票与未来日期证据 |
-| RAG 评测 | 已完成 | 已保存四种策略的 Recall@5、MRR、引用覆盖率和 P95 报告 |
-| 基本面 Agent 接入 RAG | 已完成 | RAG 检索结果通过统一工具返回给基本面 Agent，并带引用和 Trace |
-| FastAPI 演示服务 | 已完成第一版 | 提供检索、Agent 报告、覆盖范围和财报入库任务接口 |
-| React + TypeScript 前端 | 已完成第一版 | 展示检索证据、评级、报告章节、任务状态和股票覆盖范围 |
-| 异步财报入库 | 已完成第一版 | 默认进程线程池，可选 Redis + Celery 执行器 |
-| 自动定时发现新财报 | 规划中 | 当前可以手动创建增量任务，定时调度仍是下一阶段 |
-| 完整多轮辩论的稳定恢复 | 规划中 | 已有上下文限制和路由保护，完整长任务还需要异步化与 checkpoint 恢复 |
 
 ### 已有真实结果
 
@@ -37,10 +18,10 @@ TradeAgent 是一个面向金融研究和模拟决策的多智能体项目。它
 - 固定样本评测中，向量检索 Recall@5 为 `100.00%`，Hybrid 为 `97.22%`，关键词检索为 `80.56%`。
 - 四种策略的未来证据泄露率均为 `0%`。
 - 评测记录了 MRR、引用覆盖率和 P95 延迟；关键词检索 P95 为 `6.990 ms`，向量检索 P95 为 `56.580 ms`，Hybrid P95 为 `55.803 ms`。
-- 真实 Embedding 工单中，330 个 Chunk 成功生成向量并写入 PostgreSQL，数据库向量维度为 1536。
+- 真实 Embedding 工单中，成功生成向量并写入 PostgreSQL，数据库向量维度为 1536。
 - 真实基本面 RAG 运行记录在 `docs/R-13-postgres-rag-agent-trace.md`，其中明确区分了检索工具层已验证和完整多轮辩论仍存在的网关超时边界。
 
-这些数字属于当前固定样本和运行环境的实测结果，不代表所有股票、所有模型和所有网络环境都能得到相同结果。
+
 
 ## 系统怎么工作
 
@@ -200,37 +181,3 @@ results/rag_eval/rag-evaluation.md
 docs/R-12-D-evaluation-report.html
 ```
 
-## 工单和学习路线
-
-建议按下面顺序阅读，而不是一开始就直接看所有代码：
-
-1. [智能体学习与完善路线](docs/AGENT_LEARNING_ROADMAP.md)：看整体阶段、面试问题和工单依赖。
-2. [亲手复现手册](docs/LEARNING_RUNBOOK.md)：按命令验证基础工作流和工具调用。
-3. [架构选型记录](docs/ADR-001-architecture-decision.md)：理解为什么使用 LangGraph 固定工作流。
-4. [RAG 工单参考](skills/tradingagents-agent-growth/references/rag-workorders.md)：看文档入库、检索、Agent 接入和服务化顺序。
-5. `docs/R-01` 到 `docs/R-15`：按编号阅读每张工单的实现、结果、限制和面试回答。
-6. [RAG 评测 HTML 报告](docs/R-12-D-evaluation-report.html)：查看真实策略对比。
-7. [PostgreSQL RAG Agent Trace](docs/R-13-postgres-rag-agent-trace.md)：查看真实工具层和端到端运行边界。
-
-每张工单都尽量保留四类证据：代码、测试、设计说明和面试版总结。项目中“已完成”表示代码、文档或对应验收已经存在；“第一版”表示可以演示，但还没有包装成完整生产系统；“规划中”表示还没有把它说成现有能力。
-
-## 当前限制和下一步
-
-当前最需要继续完善的是：
-
-- 把长时间的完整多智能体运行放入可靠的异步任务和节点级 checkpoint/resume，降低单次网关超时的影响。
-- 增加 SEC 定时发现和增量同步，让新财报自动进入下载、解析、Chunk、Embedding 和入库链路。
-- 建立股票覆盖、最新可用日期、向量成功率和失败原因的持续指标。
-- 补充在线 SEC 兜底与本地 PostgreSQL 检索的延迟、成功率和稳定性对比。
-- 在稳定模型网关上补齐完整回答级 Token 和成本观测，不能用 Embedding 延迟代替 LLM 成本。
-- 继续补充鉴权、限流、报告持久化和部署回滚能力。
-
-## 关于仓库内容和敏感配置
-
-当前仓库已经同步代码、工单、Skill、上下文资料、真实财报样本、Chunk、评测结果、运行报告和前端构建产物。按本项目的私有仓库使用约定，当前提交也保留了本地 `.env` 配置快照；如果仓库改为公开，或密钥曾经被其他人看到，应立即撤销并重新生成对应密钥。
-
-本地 `.venv/`、`frontend/node_modules/`、`__pycache__/`、测试缓存等仍然不上传，因为它们是机器相关的依赖和临时文件，不是项目源代码或学习资料。
-
-## 上游项目与许可证
-
-本项目基于 [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) 继续学习和改造，仓库保留上游的许可证和引用信息。上游项目的原始说明、架构图片和许可证请参阅 [CHANGELOG.md](CHANGELOG.md)、[LICENSE](LICENSE) 以及仓库中的 `assets/`。
