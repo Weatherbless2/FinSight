@@ -1,6 +1,6 @@
-# TradeAgent
+# FinSight
 
-TradeAgent 是一个面向金融研究和模拟决策的多智能体项目。它把股票行情、技术指标、新闻、宏观数据、财报和公告交给不同的分析角色处理，再经过多空研究、交易计划和风险复核，输出一份带运行信息的研究报告。
+FinSight 是一个面向金融研究和模拟决策的多智能体项目。它把股票行情、技术指标、新闻、宏观数据、财报和公告交给不同的分析角色处理，再经过多空研究、交易计划和风险复核，输出一份带运行信息的研究报告。
 
 这个仓库的重点不是自动实盘交易，而是学习和展示 Agent 工程能力：工作流编排、工具调用、状态管理、RAG、数据入库、异步任务、可观测性、测试和前后端服务化。
 
@@ -112,8 +112,8 @@ results/                       RAG 评测原始结果和 Markdown 摘要
 ### 1. 准备 Python 环境
 
 ```bash
-git clone git@github.com:Weatherbless2/TradeAgent.git
-cd TradeAgent
+git clone git@github.com:Weatherbless2/FinSight.git
+cd FinSight
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
@@ -200,37 +200,32 @@ results/rag_eval/rag-evaluation.md
 docs/R-12-D-evaluation-report.html
 ```
 
-## 工单和学习路线
+## 已实现能力
 
-建议按下面顺序阅读，而不是一开始就直接看所有代码：
+FinSight 当前已经完成从数据采集到研究报告展示的可运行链路：
 
-1. [智能体学习与完善路线](docs/AGENT_LEARNING_ROADMAP.md)：看整体阶段、面试问题和工单依赖。
-2. [亲手复现手册](docs/LEARNING_RUNBOOK.md)：按命令验证基础工作流和工具调用。
-3. [架构选型记录](docs/ADR-001-architecture-decision.md)：理解为什么使用 LangGraph 固定工作流。
-4. [RAG 工单参考](skills/tradingagents-agent-growth/references/rag-workorders.md)：看文档入库、检索、Agent 接入和服务化顺序。
-5. `docs/R-01` 到 `docs/R-15`：按编号阅读每张工单的实现、结果、限制和面试回答。
-6. [RAG 评测 HTML 报告](docs/R-12-D-evaluation-report.html)：查看真实策略对比。
-7. [PostgreSQL RAG Agent Trace](docs/R-13-postgres-rag-agent-trace.md)：查看真实工具层和端到端运行边界。
+- 多智能体工作流：使用 LangGraph 编排分析师、研究员、交易员、风险角色和组合经理，固定节点负责流程控制，局部 ToolNode 循环负责工具调用。
+- 金融数据接入：支持行情、技术指标、新闻、宏观数据、SEC 财报和公告，并对股票代码、日期、指标和财报参数进行 Pydantic 校验。
+- 文档入库：完成 SEC 财报发现、下载、哈希校验、清洗、Chunk 切分和元数据保存；支持增量财报入库任务。
+- PostgreSQL RAG：使用 PostgreSQL + pgvector 保存文档、Chunk、全文索引、Embedding 状态和向量，检索时按股票代码和 `available_at` 过滤，避免使用分析时点之后的证据。
+- 混合检索和证据约束：提供关键词、向量和 Hybrid 检索，统一返回带文档、日期、Chunk 和 Trace 信息的 EvidenceBundle，基本面 Agent 只能基于检索证据组织结论。
+- RAG 评测：已保存 Recall@5、MRR、引用覆盖率、未来证据泄露率和 P95 延迟等指标，固定样本的向量检索 Recall@5 为 `100.00%`，未来证据泄露率为 `0%`。
+- 服务化：FastAPI 提供健康检查、股票覆盖、检索、基本面 Agent 报告和 SEC 增量入库接口；React + TypeScript 前端展示检索证据、评级、报告章节、任务状态和覆盖范围。
+- 任务和观测：默认使用进程线程池执行异步入库任务，可选 Redis + Celery；记录检索、Embedding、任务状态和报告运行信息，便于复现和排查。
 
-每张工单都尽量保留四类证据：代码、测试、设计说明和面试版总结。项目中“已完成”表示代码、文档或对应验收已经存在；“第一版”表示可以演示，但还没有包装成完整生产系统；“规划中”表示还没有把它说成现有能力。
+## 运行验证
 
-## 当前限制和下一步
+仓库中保留了与实现对应的测试、迁移、评测结果和运行记录。启动服务后，可以按下面的接口确认链路是否正常：
 
-当前最需要继续完善的是：
+```text
+http://127.0.0.1:5173/          React 前端
+http://127.0.0.1:8000/docs      FastAPI 接口文档
+http://127.0.0.1:8000/health    服务健康检查
+http://127.0.0.1:8000/api/coverage  PostgreSQL 知识库覆盖范围
+```
 
-- 把长时间的完整多智能体运行放入可靠的异步任务和节点级 checkpoint/resume，降低单次网关超时的影响。
-- 增加 SEC 定时发现和增量同步，让新财报自动进入下载、解析、Chunk、Embedding 和入库链路。
-- 建立股票覆盖、最新可用日期、向量成功率和失败原因的持续指标。
-- 补充在线 SEC 兜底与本地 PostgreSQL 检索的延迟、成功率和稳定性对比。
-- 在稳定模型网关上补齐完整回答级 Token 和成本观测，不能用 Embedding 延迟代替 LLM 成本。
-- 继续补充鉴权、限流、报告持久化和部署回滚能力。
+RAG 评测原始结果位于 `results/rag_eval/`，HTML 报告位于 `docs/R-12-D-evaluation-report.html`；PostgreSQL RAG 工具调用记录位于 `docs/R-13-postgres-rag-agent-trace.md`。
 
-## 关于仓库内容和敏感配置
+## 许可证和上游致谢
 
-当前仓库已经同步代码、工单、Skill、上下文资料、真实财报样本、Chunk、评测结果、运行报告和前端构建产物。按本项目的私有仓库使用约定，当前提交也保留了本地 `.env` 配置快照；如果仓库改为公开，或密钥曾经被其他人看到，应立即撤销并重新生成对应密钥。
-
-本地 `.venv/`、`frontend/node_modules/`、`__pycache__/`、测试缓存等仍然不上传，因为它们是机器相关的依赖和临时文件，不是项目源代码或学习资料。
-
-## 上游项目与许可证
-
-本项目基于 [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) 继续学习和改造，仓库保留上游的许可证和引用信息。上游项目的原始说明、架构图片和许可证请参阅 [CHANGELOG.md](CHANGELOG.md)、[LICENSE](LICENSE) 以及仓库中的 `assets/`。
+FinSight 基于 [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) 继续开发，仓库保留上游许可证和引用信息，详见 [CHANGELOG.md](CHANGELOG.md)、[LICENSE](LICENSE) 和 `assets/`。
